@@ -11,9 +11,19 @@ config_version=5
 [application]
 
 config/name="2d Platformer Tutorial"
-config/features=PackedStringArray("4.1", "Forward Plus")
+config/features=PackedStringArray("4.1", "C#", "Forward Plus")
 config/icon="res://icon.svg"
+
+[display]
+
+window/size/viewport_width=1920
+window/size/viewport_height=1080
+window/size/mode=3
 
 [dotnet]
 
 project/assembly_name="2d Platformer Tutorial"
+
+[rendering]
+
+textures/canvas_textures/default_texture_filter=0
