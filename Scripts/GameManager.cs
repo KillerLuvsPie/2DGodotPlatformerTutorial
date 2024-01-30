@@ -1,52 +1,135 @@
 using Godot;
 using System;
-using System.Text.RegularExpressions;
 
 public partial class GameManager : Node
 {
-	public static GameManager instance;
+	#region VARIABLES
+	//SINGLETON
+	public static GameManager Instance;
+	//EXPORTS
+	[Export]
+	private Label fruitLabel;
+	[Export]
+	private Label timeLabel;
+	[Export]
+	private Panel pauseMenu;
+	[Export]
+	private Panel winScreen;
+	[Export]
+	private Panel loseScreen;
+	[Export]
+	private Label deathTotal;
+	[Export]
+	private Label timeTotal;
+	//CONTROL
+	public bool pausable = true;
+	public bool paused = false;
+	public bool playerControl = true;
+	//STATS
 	private int fruitCounter;
-	private int lives = 3;
+	private int deathCounter = 0;
+	private Vector2 currentCheckpoint;
+	//TIME
+	private double timeElapsed = 0;
+	private int minutes = 0;
+	private int seconds = 0;
+	#endregion VAARIABLES
 
-	public void SetFruitCounter()
+	#region FUNCTIONS
+	private void SetFruitCounter()
 	{
 		fruitCounter = GetTree().GetNodesInGroup("Fruit").Count;
-		GD.Print(fruitCounter);
+		fruitLabel.Text = "Fruit: " + fruitCounter;
+	}
+
+	public void SetCurrentCheckpoint(Vector2 pos)
+	{
+		currentCheckpoint = pos;
 	}
 
 	public void DecreaseFruitCounter()
 	{
 		fruitCounter--;
-		GD.Print(fruitCounter);
-		//CHANGE UI HERE
+		fruitLabel.Text = "Fruit: " + fruitCounter;
 		CheckForWin();
 	}
 
-	public void CheckForWin()
+	public void TogglePause()
+	{
+		paused = !paused;
+		pauseMenu.Visible = !pauseMenu.Visible;
+		playerControl = !playerControl;
+		if(paused)
+			Engine.TimeScale = 0;
+		else
+			Engine.TimeScale = 1;
+	}
+
+	private void TimerFunction(double delta)
+	{
+		timeElapsed += delta;
+		minutes = Mathf.FloorToInt(timeElapsed / 60);
+		seconds = Mathf.FloorToInt(timeElapsed % 60);
+		timeLabel.Text = minutes.ToString("00") + ":" + seconds.ToString("00");
+	}
+
+	private void CheckForWin()
 	{
 		if(fruitCounter == 0)
-			//SHOW YOU WIN LABEL
-			GD.Print("You Win!!!");
+		{
+			pausable = false;
+			playerControl = false;
+			Engine.TimeScale = 0;
+			deathTotal.Text = "Deaths: " + deathCounter.ToString();
+			timeTotal.Text = "Time cleared: " + minutes.ToString("00") + ":" + seconds.ToString("00");
+			winScreen.Visible = true;
+		}
 	}
 
-	public void CheckForGameOver()
+	public void GameOver()
 	{
-		if(lives == 0)
-			GD.Print("Game Over");
+		deathCounter++;
+		loseScreen.Visible = true;
+	}
+	#endregion FUNCTIONS
+
+	#region SIGNALS
+	public void OnRetryButtonPressed()
+	{
+		loseScreen.Visible = false;
+		Player.Instance.Position = currentCheckpoint;
 	}
 
-	// Called when the node enters the scene tree for the first time.
+	public void OnNextLevelButtonPressed()
+	{
+		//LOAD LEVEL
+	}
+
+	public void OnExitButtonPressed()
+	{
+		//BACK TO MAIN MENU
+	}
+
+	public void LateReady()
+	{
+		SetCurrentCheckpoint(Player.Instance.Position);
+	}
+	#endregion SIGNALS
+
+	#region GODOT FUNCTIONS
 	public override void _Ready()
 	{
-		if(instance != this && instance != null)
+		if(Instance != this && Instance != null)
 			QueueFree();
 		else
-			instance = this;
+			Instance = this;
 		SetFruitCounter();
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)
 	{
+		TimerFunction(delta);
 	}
+	#endregion GODOT FUNCTIONS
 }
