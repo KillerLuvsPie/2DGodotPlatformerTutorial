@@ -28,7 +28,7 @@ public partial class GameManager : Node
 	//STATS
 	private int fruitCounter;
 	private int deathCounter = 0;
-	private Vector2 currentCheckpoint;
+	public Vector2 currentCheckpoint;
 	//TIME
 	private double timeElapsed = 0;
 	private int minutes = 0;
@@ -90,6 +90,7 @@ public partial class GameManager : Node
 	{
 		deathCounter++;
 		loseScreen.Visible = true;
+		Engine.TimeScale = 0;
 	}
 	#endregion FUNCTIONS
 
@@ -97,7 +98,8 @@ public partial class GameManager : Node
 	public void OnRetryButtonPressed()
 	{
 		loseScreen.Visible = false;
-		Player.Instance.Position = currentCheckpoint;
+		Engine.TimeScale = 1;
+		Player.Instance.Respawn();	
 	}
 
 	public void OnNextLevelButtonPressed()

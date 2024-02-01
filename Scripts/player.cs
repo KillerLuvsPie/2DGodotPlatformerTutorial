@@ -7,10 +7,33 @@ public partial class Player : CharacterBody2D
 	public static Player Instance;
 	public const float Speed = 400.0f;
 	public const float JumpVelocity = -1000.0f;
-	private AnimatedSprite2D animSprite;
+	public AnimatedSprite2D animatedSprite2D;
 	// Get the gravity from the project settings to be synced with RigidBody nodes.
 	public float gravity = ProjectSettings.GetSetting("physics/2d/default_gravity").AsSingle();
 	#endregion VARIABLES
+
+	#region FUNCTIONS
+	public void Die()
+	{
+		GameManager.Instance.playerControl = false;
+		animatedSprite2D.Animation = "die";
+	}
+
+	public void Respawn()
+	{
+		Position = GameManager.Instance.currentCheckpoint;
+		GameManager.Instance.playerControl = true;
+		animatedSprite2D.Play();
+	}
+	#endregion FUNCTIONS
+
+	#region SIGNALS
+	public void OnSpriteAnimationFinished()
+	{
+		if(animatedSprite2D.Animation == "die")
+			GameManager.Instance.GameOver();
+	}
+	#endregion SIGNALS
 
 	#region GODOT FUNCTIONS
 	public override void _PhysicsProcess(double delta)
@@ -54,20 +77,20 @@ public partial class Player : CharacterBody2D
 			//ANIMATION CONTROL
 			//FLIP SPRITE
 			if(velocity.X < 0)
-				animSprite.FlipH = true;
+				animatedSprite2D.FlipH = true;
 			else if(velocity.X > 0)
-				animSprite.FlipH = false;
+				animatedSprite2D.FlipH = false;
 
 			//RUN/IDLE
 			if(Mathf.Abs(velocity.X) > 1)
-				animSprite.Animation = "run";
+				animatedSprite2D.Animation = "run";
 			else
-				animSprite.Animation = "idle";
+				animatedSprite2D.Animation = "idle";
 
 			if(velocity.Y < 0)
-				animSprite.Animation = "jump";
+				animatedSprite2D.Animation = "jump";
 			else if(velocity.Y > 0)
-				animSprite.Animation = "fall";
+				animatedSprite2D.Animation = "fall";
 		}
 	}
 
@@ -77,7 +100,7 @@ public partial class Player : CharacterBody2D
 			QueueFree();
 		else
 			Instance = this;
-		animSprite = GetNode<AnimatedSprite2D>("Sprite");
+		animatedSprite2D = GetNode<AnimatedSprite2D>("Sprite");
 	}
 	#endregion GODOT FUNCTIONS
 }
