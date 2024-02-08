@@ -1,0 +1,20 @@
+#region VARIABLES
+#endregion VARIABLES
+
+#region FUNCTIONS
+#endregion FUNCTIONS
+
+#region SIGNALS
+#endregion SIGNALS
+
+#region GODOT FUNCTIONS
+public override void _Ready()
+{
+		
+}
+
+public override void _Process(double delta)
+{
+
+}
+#endregion GODOT FUNCTIONS

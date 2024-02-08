@@ -11,9 +11,13 @@ config_version=5
 [application]
 
 config/name="2d Platformer Tutorial"
-run/main_scene="res://Scenes/Level1.scn"
+run/main_scene="res://Scenes/MainMenu.scn"
 config/features=PackedStringArray("4.1", "C#", "Forward Plus")
 config/icon="res://icon.svg"
+
+[autoload]
+
+Global="*res://Scripts/Global.cs"
 
 [display]
 

@@ -104,12 +104,14 @@ public partial class GameManager : Node
 
 	public void OnNextLevelButtonPressed()
 	{
-		//LOAD LEVEL
+		Global.Instance.currentLevelIndex++;
+		GetTree().ChangeSceneToFile(Global.Instance.GetScenePath());
 	}
 
 	public void OnExitButtonPressed()
 	{
-		//BACK TO MAIN MENU
+		Global.Instance.currentLevelIndex = 0;
+		GetTree().ChangeSceneToFile(Global.Instance.GetScenePath());
 	}
 
 	public void LateReady()
