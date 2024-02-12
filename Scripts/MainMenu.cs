@@ -10,6 +10,12 @@ public partial class MainMenu : CanvasLayer
     private Control levelSelectScreen;
     [Export]
     private Control optionsScreen;
+    [Export]
+    private OptionButton resolutionOptions;
+    [Export]
+    private HSlider musicSlider;
+    [Export]
+    private HSlider sfxSlider;
     #endregion VARIABLES
 
     #region FUNCTIONS

@@ -21,6 +21,16 @@ public partial class GameManager : Node
 	private Label deathTotal;
 	[Export]
 	private Label timeTotal;
+	[Export]
+	private Camera2D camera2D;
+	[Export]
+	private Marker2D cameraLeftBound;
+	[Export]
+	private Marker2D cameraBottomBound;
+	[Export]
+	private Marker2D cameraRightBound;
+	[Export]
+	private Marker2D cameraUpperBound;
 	//CONTROL
 	public bool pausable = true;
 	public bool paused = false;
@@ -36,6 +46,13 @@ public partial class GameManager : Node
 	#endregion VAARIABLES
 
 	#region FUNCTIONS
+	private void SetCameraLimits()
+	{
+		camera2D.LimitLeft = (int)cameraLeftBound.Position.X;
+		camera2D.LimitBottom = (int)cameraBottomBound.Position.Y;
+		camera2D.LimitRight = (int)cameraRightBound.Position.X;
+		camera2D.LimitTop = (int)cameraUpperBound.Position.Y;
+	}
 	private void SetFruitCounter()
 	{
 		fruitCounter = GetTree().GetNodesInGroup("Fruit").Count;
@@ -128,6 +145,7 @@ public partial class GameManager : Node
 		else
 			Instance = this;
 		SetFruitCounter();
+		SetCameraLimits();
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
