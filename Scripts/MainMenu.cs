@@ -15,7 +15,11 @@ public partial class MainMenu : CanvasLayer
     [Export]
     private HSlider musicSlider;
     [Export]
+    private Label musicSliderLabel;
+    [Export]
     private HSlider sfxSlider;
+    [Export]
+    private Label sfxSliderLabel;
     #endregion VARIABLES
 
     #region FUNCTIONS
@@ -58,8 +62,24 @@ public partial class MainMenu : CanvasLayer
         mainMenuScreen.Visible = true;
     }
 
+    public void MusicSliderValueChange(float value)
+    {
+        AudioServer.SetBusVolumeDb(AudioServer.GetBusIndex("Music"), Mathf.LinearToDb(value));
+    }
+
+    public void SFXSliderValueChange(float value)
+    {
+        AudioServer.SetBusVolumeDb(AudioServer.GetBusIndex("SFX"), Mathf.LinearToDb(value));
+    }
     #endregion SIGNALS
 
     #region GODOT FUNCTIONS
+    public override void _Ready()
+    {
+        musicSlider.Value = Mathf.DbToLinear(AudioServer.GetBusVolumeDb(AudioServer.GetBusIndex("Music")));
+        musicSliderLabel.Text = (musicSlider.Value * 100).ToString("0");
+        sfxSlider.Value = Mathf.DbToLinear(AudioServer.GetBusVolumeDb(AudioServer.GetBusIndex("SFX")));
+        sfxSliderLabel.Text = (sfxSlider.Value * 100).ToString("0");
+    }
     #endregion GODOT FUNCTIONS
 }
