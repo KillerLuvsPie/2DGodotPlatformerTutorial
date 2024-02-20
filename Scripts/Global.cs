@@ -6,6 +6,12 @@ public partial class Global : Node
 {
 	//SINGLETON
 	public static Global Instance;
+
+	#region GROUP NAMES
+	public const string controlButtonGroup = "ControlButtons";
+	public const string fruitGroup = "Fruit";
+	#endregion
+
 	#region OPTION VARIABLES
 	public readonly Dictionary<string, Vector2I> Resolutions = new Dictionary<string, Vector2I>()
 	{

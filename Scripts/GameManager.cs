@@ -55,7 +55,7 @@ public partial class GameManager : Node
 	}
 	private void SetFruitCounter()
 	{
-		fruitCounter = GetTree().GetNodesInGroup("Fruit").Count;
+		fruitCounter = GetTree().GetNodesInGroup(Global.fruitGroup).Count;
 		fruitLabel.Text = "Fruit: " + fruitCounter;
 	}
 

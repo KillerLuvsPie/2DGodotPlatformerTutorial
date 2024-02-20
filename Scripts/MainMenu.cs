@@ -30,7 +30,7 @@ public partial class MainMenu : CanvasLayer
     private Label sfxSliderLabel;
 
     //CONTROLS REMAPPING
-    
+    private string[] controlButtonActions;
     #endregion VARIABLES
 
     #region FUNCTIONS
@@ -50,12 +50,6 @@ public partial class MainMenu : CanvasLayer
         musicSliderLabel.Text = (musicSlider.Value * 100).ToString("0") + "%";
         sfxSlider.Value = Mathf.DbToLinear(AudioServer.GetBusVolumeDb(AudioServer.GetBusIndex("SFX")));
         sfxSliderLabel.Text = (sfxSlider.Value * 100).ToString("0") + "%";
-
-        //CONTROLS
-        foreach (Button button in GetTree().GetNodesInGroup("ControlButtons"))
-        {
-            button.Text = InputMap.ActionGetEvents(button.Text)[0].AsText().Replace(" (Physical)", "");
-        }
     }
     #endregion FUNCTIONS
 
@@ -102,13 +96,6 @@ public partial class MainMenu : CanvasLayer
         controlsScreen.Visible = true;
     }
 
-    private void CenterWindow()
-    {
-        Vector2I screenCenter = DisplayServer.ScreenGetPosition() + DisplayServer.ScreenGetSize() / 2;
-        Vector2I windowSize = GetWindow().GetSizeWithDecorations();
-        GetWindow().SetImePosition(screenCenter - windowSize /2);
-    }
-
     public void WindowModeSelected(int id)
     {
         switch (id)
@@ -116,7 +103,6 @@ public partial class MainMenu : CanvasLayer
             case 0:
                 DisplayServer.WindowSetMode(DisplayServer.WindowMode.Windowed);
                 DisplayServer.WindowSetFlag(DisplayServer.WindowFlags.Borderless, false);
-                CenterWindow();
                 break;
             case 1:
                 DisplayServer.WindowSetMode(DisplayServer.WindowMode.Fullscreen);
@@ -125,7 +111,6 @@ public partial class MainMenu : CanvasLayer
             case 2:
                 DisplayServer.WindowSetMode(DisplayServer.WindowMode.Windowed);
                 DisplayServer.WindowSetFlag(DisplayServer.WindowFlags.Borderless, true);
-                CenterWindow();
                 break;
             case 3:
                 DisplayServer.WindowSetMode(DisplayServer.WindowMode.Fullscreen);
@@ -137,7 +122,6 @@ public partial class MainMenu : CanvasLayer
     public void ResolutionSelected(int id)
     {
         DisplayServer.WindowSetSize(Global.Instance.Resolutions.ElementAt(id).Value);
-        CenterWindow();
     }
 
     public void MusicSliderValueChange(float value)
@@ -153,11 +137,6 @@ public partial class MainMenu : CanvasLayer
     }
 
     //CONTROLS MENU
-    public void InitializeControlButtons(string action)
-    {
-
-    }
-
     public void ControlsBackButtonClick()
     {
         controlsScreen.Visible = false;
