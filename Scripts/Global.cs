@@ -9,6 +9,7 @@ public partial class Global : Node
 
 	#region GROUP NAMES
 	public const string controlButtonGroup = "ControlButtons";
+	public const string levelButtonGroup = "LevelButtons";
 	public const string fruitGroup = "Fruit";
 	#endregion <--->
 

@@ -51,6 +51,15 @@ public partial class MainMenu : CanvasLayer
         sfxSlider.Value = Mathf.DbToLinear(AudioServer.GetBusVolumeDb(AudioServer.GetBusIndex("SFX")));
         sfxSliderLabel.Text = (sfxSlider.Value * 100).ToString("0") + "%";
     }
+
+    private void InitializeUnlocks()
+    {
+        for(int i = 0; i < Global.Instance.UnlockedLevelIndex; i++)
+        {
+            Button button = (Button)GetTree().GetNodesInGroup(Global.levelButtonGroup)[i];
+            button.Disabled = false;
+        }
+    }
     #endregion <--->
 
     #region SIGNALS
@@ -148,6 +157,7 @@ public partial class MainMenu : CanvasLayer
     public override void _Ready()
     {
         InitializeOptions();
+        InitializeUnlocks();
     }
     #endregion <--->
 }
