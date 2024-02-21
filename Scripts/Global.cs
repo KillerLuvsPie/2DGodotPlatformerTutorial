@@ -10,7 +10,7 @@ public partial class Global : Node
 	#region GROUP NAMES
 	public const string controlButtonGroup = "ControlButtons";
 	public const string fruitGroup = "Fruit";
-	#endregion
+	#endregion <--->
 
 	#region OPTION VARIABLES
 	public readonly Dictionary<string, Vector2I> Resolutions = new Dictionary<string, Vector2I>()
@@ -19,7 +19,7 @@ public partial class Global : Node
 		{"1280 x 720", new Vector2I(1280, 720)},
 		{"1920 x 1080", new Vector2I(1920, 1080)} 
 	};
-	#endregion
+	#endregion <--->
 
 	#region LEVEL VARIABLES AND FUNCTIONS
 	public int currentLevelIndex = 0;
@@ -31,7 +31,7 @@ public partial class Global : Node
 			return "res://Scenes/MainMenu.scn";
 		return "res://Scenes/Level"+ currentLevelIndex +".scn";
 	}
-	#endregion
+	#endregion <--->
 
 	#region GODOT FUNCTIONS
 	public override void _Ready()
@@ -41,5 +41,5 @@ public partial class Global : Node
 		else
 			Instance = this;
 	}
-	#endregion
+	#endregion <--->
 }

@@ -31,7 +31,7 @@ public partial class MainMenu : CanvasLayer
 
     //CONTROLS REMAPPING
     private string[] controlButtonActions;
-    #endregion VARIABLES
+    #endregion <--->
 
     #region FUNCTIONS
     private void InitializeOptions()
@@ -51,7 +51,7 @@ public partial class MainMenu : CanvasLayer
         sfxSlider.Value = Mathf.DbToLinear(AudioServer.GetBusVolumeDb(AudioServer.GetBusIndex("SFX")));
         sfxSliderLabel.Text = (sfxSlider.Value * 100).ToString("0") + "%";
     }
-    #endregion FUNCTIONS
+    #endregion <--->
 
     #region SIGNALS
     //MAIN SCREEN
@@ -142,12 +142,12 @@ public partial class MainMenu : CanvasLayer
         controlsScreen.Visible = false;
         optionsScreen.Visible = true;
     }
-    #endregion SIGNALS
+    #endregion <--->
 
     #region GODOT FUNCTIONS
     public override void _Ready()
     {
         InitializeOptions();
     }
-    #endregion GODOT FUNCTIONS
+    #endregion <--->
 }

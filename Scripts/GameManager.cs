@@ -43,7 +43,7 @@ public partial class GameManager : Node
 	private double timeElapsed = 0;
 	private int minutes = 0;
 	private int seconds = 0;
-	#endregion VAARIABLES
+	#endregion <--->
 
 	#region FUNCTIONS
 	private void SetCameraLimits()
@@ -109,7 +109,7 @@ public partial class GameManager : Node
 		loseScreen.Visible = true;
 		Engine.TimeScale = 0;
 	}
-	#endregion FUNCTIONS
+	#endregion <--->
 
 	#region SIGNALS
 	public void OnRetryButtonPressed()
@@ -135,15 +135,16 @@ public partial class GameManager : Node
 	{
 		SetCurrentCheckpoint(Player.Instance.Position);
 	}
-	#endregion SIGNALS
+	#endregion <--->
 
 	#region GODOT FUNCTIONS
 	public override void _Ready()
 	{
-		if(Instance != this && Instance != null)
+		if(Instance != this && Instance != null && IsInstanceValid(Instance))
 			QueueFree();
 		else
 			Instance = this;
+		Engine.TimeScale = 1;
 		SetFruitCounter();
 		SetCameraLimits();
 	}
@@ -153,5 +154,5 @@ public partial class GameManager : Node
 	{
 		TimerFunction(delta);
 	}
-	#endregion GODOT FUNCTIONS
+	#endregion <--->
 }

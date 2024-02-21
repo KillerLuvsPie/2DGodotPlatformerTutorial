@@ -6,7 +6,7 @@ public partial class Cherry : Area2D
 	#region VARIABLES
 	private bool active = true;
 	private AnimatedSprite2D animatedSprite2D;
-	#endregion VARIABLES
+	#endregion <--->
 
 	#region SIGNALS
 	public void OnAnimatedSprite2dAnimationFinished()
@@ -23,7 +23,7 @@ public partial class Cherry : Area2D
 			animatedSprite2D.Animation = "collected";
 		}	
 	}
-	#endregion SIGNALS
+	#endregion <--->
 
 	#region GODOT FUNCTIONS
 	public override void _Ready()
@@ -34,5 +34,5 @@ public partial class Cherry : Area2D
 	public override void _Process(double delta)
 	{
 	}
-	#endregion GODOT FUNCTIONS
+	#endregion <--->
 }

@@ -14,7 +14,7 @@ public partial class EnemyPig : Node2D
 	//PROPERTIES
 	private float speed = 150;
 	private int direction = -1;
-	#endregion VARIABLES
+	#endregion <--->
 
 	#region FUNCTIONS
 	private void MoveCharacter(double delta)
@@ -33,7 +33,7 @@ public partial class EnemyPig : Node2D
 			
 		Translate(new Vector2(speed * direction * (float)delta, 0));
 	}
-	#endregion FUNCTIONS
+	#endregion <--->
 
 	#region SIGNALS
 	public void OnBodyEntered(Node2D body)
@@ -43,7 +43,7 @@ public partial class EnemyPig : Node2D
 			Player.Instance.Die();
 		}		
 	}
-	#endregion SIGNALS
+	#endregion <--->
 
 	#region GODOT FUNCTIONS
 	public override void _Ready()
@@ -54,5 +54,5 @@ public partial class EnemyPig : Node2D
 	{
 		MoveCharacter(delta);
 	}
-	#endregion GODOT FUNCTIONS
+	#endregion <--->
 }

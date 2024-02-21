@@ -10,7 +10,7 @@ public partial class Player : CharacterBody2D
 	public AnimatedSprite2D animatedSprite2D;
 	// Get the gravity from the project settings to be synced with RigidBody nodes.
 	public float gravity = ProjectSettings.GetSetting("physics/2d/default_gravity").AsSingle();
-	#endregion VARIABLES
+	#endregion <--->
 
 	#region FUNCTIONS
 	public void Die()
@@ -25,7 +25,7 @@ public partial class Player : CharacterBody2D
 		GameManager.Instance.playerControl = true;
 		animatedSprite2D.Play();
 	}
-	#endregion FUNCTIONS
+	#endregion <--->
 
 	#region SIGNALS
 	public void OnSpriteAnimationFinished()
@@ -33,7 +33,7 @@ public partial class Player : CharacterBody2D
 		if(animatedSprite2D.Animation == "die")
 			GameManager.Instance.GameOver();
 	}
-	#endregion SIGNALS
+	#endregion <--->
 
 	#region GODOT FUNCTIONS
 	public override void _PhysicsProcess(double delta)
@@ -96,11 +96,11 @@ public partial class Player : CharacterBody2D
 
 	public override void _Ready()
 	{
-		if(Instance != this && Instance != null)
+		if(Instance != this && Instance != null && IsInstanceValid(Instance))
 			QueueFree();
 		else
 			Instance = this;
 		animatedSprite2D = GetNode<AnimatedSprite2D>("Sprite");
 	}
-	#endregion GODOT FUNCTIONS
+	#endregion <--->
 }

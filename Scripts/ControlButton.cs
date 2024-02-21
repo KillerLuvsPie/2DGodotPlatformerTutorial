@@ -8,14 +8,14 @@ public partial class ControlButton : Button
 	[Export]
 	private int actionIndex = 0;
 	private string action;
-	#endregion ---
+	#endregion <--->
 
 	#region FUNCTIONS
 	private void SetControlButtonText()
     {
         Text = InputMap.ActionGetEvents(action)[0].AsText().Replace(" (Physical)", "");
     }
-	#endregion ---
+	#endregion <--->
 
 	#region SIGNALS
 	private void ToggleControlButton(bool ButtonPressed)
@@ -32,7 +32,7 @@ public partial class ControlButton : Button
             GrabFocus();
         }
     }
-	#endregion ---
+	#endregion <--->
 
 	#region GODOT FUNCTIONS
 	public override void _Ready()
@@ -64,5 +64,5 @@ public partial class ControlButton : Button
 			ButtonPressed = false;
 		}
     }
-    #endregion ---
+    #endregion <--->
 }
