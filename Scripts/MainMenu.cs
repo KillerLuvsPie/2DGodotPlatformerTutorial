@@ -15,6 +15,14 @@ public partial class MainMenu : CanvasLayer
     [Export]
     private Control controlsScreen;
 
+    //LEVEL STATS PANEL
+    [Export]
+    private HBoxContainer statsContainer;
+    [Export]
+    private Label timeLabel;
+    [Export]
+    private Label deathLabel;
+
     //OPTION ELEMENTS
     [Export]
     private OptionButton windowModeOptions;
@@ -52,12 +60,18 @@ public partial class MainMenu : CanvasLayer
         sfxSliderLabel.Text = (sfxSlider.Value * 100).ToString("0") + "%";
     }
 
-    private void InitializeUnlocks()
+    private void InitializeButtonLevels()
     {
-        for(int i = 0; i < Global.Instance.UnlockedLevelIndex; i++)
+        for(int i = 0; i < GetTree().GetNodesInGroup(Global.levelButtonGroup).Count; i++)
         {
             Button button = (Button)GetTree().GetNodesInGroup(Global.levelButtonGroup)[i];
-            button.Disabled = false;
+            if(i < Global.Instance.UnlockedLevelIndex)
+            {
+                button.Disabled = false;
+                button.MouseFilter = Control.MouseFilterEnum.Stop;
+            }
+            button.MouseEntered += () => OnHoverDisplayLevelStats(i);
+            button.MouseExited += HoverExitHideLevelStats;
         }
     }
     #endregion <--->
@@ -91,6 +105,26 @@ public partial class MainMenu : CanvasLayer
     {
         Global.Instance.currentLevelIndex = num;
         GetTree().ChangeSceneToFile(Global.Instance.GetScenePath());
+    }
+
+    public void OnHoverDisplayLevelStats(int i)
+    {
+        /*int seconds;
+        int minutes;*/
+        if(Global.Instance.levelTimeRecords[i] == null)
+            timeLabel.Text = "Time: --:--";
+        else
+            timeLabel.Text = Global.Instance.levelTimeRecords[i].ToString();
+        if(Global.Instance.levelDeathRecords[i] == null)
+            deathLabel.Text = "Deaths: ---";
+        else
+            deathLabel.Text = Global.Instance.levelDeathRecords[i].ToString();
+        statsContainer.Show();
+    }
+
+    public void HoverExitHideLevelStats()
+    {
+        statsContainer.Hide();
     }
     //OPTIONS MENU
     public void OptionsBackButtonClick()
@@ -157,7 +191,7 @@ public partial class MainMenu : CanvasLayer
     public override void _Ready()
     {
         InitializeOptions();
-        InitializeUnlocks();
+        InitializeButtonLevels();
     }
     #endregion <--->
 }

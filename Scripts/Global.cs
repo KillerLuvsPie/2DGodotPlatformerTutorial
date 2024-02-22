@@ -25,12 +25,24 @@ public partial class Global : Node
 	#region LEVEL VARIABLES AND FUNCTIONS
 	public int currentLevelIndex = 0;
 	public int UnlockedLevelIndex = 1;
-	
+	public Dictionary<int, float?> levelTimeRecords = new Dictionary<int, float?>();
+	public Dictionary<int, int?> levelDeathRecords = new Dictionary<int, int?>();
+
 	public string GetScenePath()
 	{
 		if(currentLevelIndex == 0)
 			return "res://Scenes/MainMenu.scn";
 		return "res://Scenes/Level"+ currentLevelIndex +".scn";
+	}
+
+	private void InitializeLevelLists()
+	{
+		int levelTotal = 5;
+		for(int i = 1; i <= levelTotal; i++)
+		{
+			levelTimeRecords.Add(i, null);
+			levelDeathRecords.Add(i, null);
+		}
 	}
 	#endregion <--->
 
@@ -41,6 +53,7 @@ public partial class Global : Node
 			QueueFree();
 		else
 			Instance = this;
+		InitializeLevelLists();
 	}
 	#endregion <--->
 }
