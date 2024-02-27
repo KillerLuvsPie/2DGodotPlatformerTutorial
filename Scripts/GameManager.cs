@@ -6,39 +6,42 @@ public partial class GameManager : Node
 	#region VARIABLES
 	//SINGLETON
 	public static GameManager Instance;
+
 	//EXPORTS
-	[Export]
-	private Label fruitLabel;
-	[Export]
-	private Label timeLabel;
-	[Export]
-	private Panel pauseMenu;
-	[Export]
-	private Panel winScreen;
-	[Export]
-	private Panel loseScreen;
-	[Export]
-	private Label deathTotal;
-	[Export]
-	private Label timeTotal;
-	[Export]
-	private Camera2D camera2D;
-	[Export]
-	private Marker2D cameraLeftBound;
-	[Export]
-	private Marker2D cameraBottomBound;
-	[Export]
-	private Marker2D cameraRightBound;
-	[Export]
-	private Marker2D cameraUpperBound;
+	//COUNTDOWN TEXT
+	[Export] private Texture2D[] countdownSprites = new Texture2D[4];
+
+	//UI
+	[Export] private TextureRect countdownDisplay;
+	[Export] private Label fruitLabel;
+	[Export] private Label timeLabel;
+	[Export] private Panel pauseMenu;
+	[Export] private Panel winScreen;
+	[Export] private Panel loseScreen;
+	[Export] private Label deathTotal;
+	[Export] private Label timeTotal;
+	[Export] private AnimationPlayer fadeAnimator;
+
+	//CAMERA
+	[Export] private Camera2D camera2D;
+	[Export] private Marker2D cameraLeftBound;
+	[Export] private Marker2D cameraBottomBound;
+	[Export] private Marker2D cameraRightBound;
+	[Export] private Marker2D cameraUpperBound;
+
+	//MUSIC PLAYER
+	[Export] private AudioStreamPlayer musicPlayer;
+	
 	//CONTROL
-	public bool pausable = true;
-	public bool paused = false;
-	public bool playerControl = true;
+	public bool pausable = false;
+	public bool playerControl = false;
+	public bool started = false;
+
 	//STATS
 	private int fruitCounter;
 	private int deathCounter = 0;
 	public Vector2 currentCheckpoint;
+
 	//TIME
 	private double timeElapsed = 0;
 	private int minutes = 0;
@@ -53,6 +56,7 @@ public partial class GameManager : Node
 		camera2D.LimitRight = (int)cameraRightBound.Position.X;
 		camera2D.LimitTop = (int)cameraUpperBound.Position.Y;
 	}
+
 	private void SetFruitCounter()
 	{
 		fruitCounter = GetTree().GetNodesInGroup(Global.fruitGroup).Count;
@@ -71,15 +75,18 @@ public partial class GameManager : Node
 		CheckForWin();
 	}
 
+	private void MoveEnemies()
+	{
+		for(int i = 0; i < GetTree().GetNodesInGroup(Global.enemyGroup).Count; i++)
+		{
+			EnemyPig enemyPig = GetTree().GetNodesInGroup(Global.enemyGroup)[i].GetNode<EnemyPig>(".");
+			enemyPig.EmitSignal(EnemyPig.SignalName.GameStarted);
+		}
+	}
 	public void TogglePause()
 	{
-		paused = !paused;
+		GetTree().Paused = !GetTree().Paused;
 		pauseMenu.Visible = !pauseMenu.Visible;
-		playerControl = !playerControl;
-		if(paused)
-			Engine.TimeScale = 0;
-		else
-			Engine.TimeScale = 1;
 	}
 
 	private void TimerFunction(double delta)
@@ -95,10 +102,10 @@ public partial class GameManager : Node
 		if(fruitCounter == 0)
 		{
 			pausable = false;
-			playerControl = false;
-			Engine.TimeScale = 0;
+			GetTree().Paused = true;
 			deathTotal.Text = "Deaths: " + deathCounter.ToString();
 			timeTotal.Text = "Time cleared: " + minutes.ToString("00") + ":" + seconds.ToString("00");
+			ResultsToGlobal();
 			winScreen.Visible = true;
 		}
 	}
@@ -107,30 +114,100 @@ public partial class GameManager : Node
 	{
 		deathCounter++;
 		loseScreen.Visible = true;
-		Engine.TimeScale = 0;
+		GetTree().Paused = true;
+	}
+
+	private void ResultsToGlobal()
+	{
+		Global.levelTimeRecords[Global.currentLevelIndex] = timeElapsed;
+		Global.levelDeathRecords[Global.currentLevelIndex] = deathCounter;
 	}
 	#endregion <--->
 
+	#region COROUTINES
+	private async void Countdown()
+	{
+		int timer = 3;
+		AnimationPlayer countdownAnimation = countdownDisplay.GetChild<AnimationPlayer>(0);
+		while(timer > 0)
+		{
+			countdownDisplay.Texture = countdownSprites[timer];
+			countdownAnimation.Play(Global.str_fadeOut);
+			timer--;
+			await ToSignal(GetTree().CreateTimer(1f), Timer.SignalName.Timeout);
+		}
+		started = true;
+		playerControl = true;
+		pausable = true;
+		countdownAnimation.Play();
+		countdownDisplay.Texture = countdownSprites[timer];
+		MoveEnemies();
+		await ToSignal(GetTree().CreateTimer(1f), Timer.SignalName.Timeout);
+		countdownDisplay.Hide();
+	}
+
+	private async void SceneTransition(int num)
+	{
+		Global.currentLevelIndex = num;
+        ShowFadeEffect(true);
+        FadeOutMusic();
+        await ToSignal(fadeAnimator, AnimationPlayer.SignalName.AnimationFinished);
+        GetTree().ChangeSceneToFile(Global.GetScenePath());
+	}
+
+	private async void FadeOutMusic()
+    {
+        while(Mathf.DbToLinear(musicPlayer.VolumeDb) > 0)
+        {
+            musicPlayer.VolumeDb -= 1;
+            await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+        }
+    }
+	#endregion <--->
+
 	#region SIGNALS
+	//BUTTONS
 	public void OnRetryButtonPressed()
 	{
 		loseScreen.Visible = false;
-		Engine.TimeScale = 1;
+		GetTree().Paused = false;
 		Player.Instance.Respawn();	
 	}
 
 	public void OnNextLevelButtonPressed()
 	{
-		Global.Instance.currentLevelIndex++;
-		GetTree().ChangeSceneToFile(Global.Instance.GetScenePath());
+		SceneTransition(++Global.currentLevelIndex);
 	}
 
 	public void OnExitButtonPressed()
 	{
-		Global.Instance.currentLevelIndex = 0;
-		GetTree().ChangeSceneToFile(Global.Instance.GetScenePath());
+		SceneTransition(0);
 	}
 
+	//ANIMATIONS
+	public void FadeAnimationFinished(string animationName)
+	{
+		if(animationName == Global.str_fadeIn)
+		{
+			ShowFadeEffect(false);
+			musicPlayer.Play();
+			Countdown();
+		}
+	}
+
+	public void ShowFadeEffect(bool show)
+	{
+		ColorRect parent = (ColorRect)fadeAnimator.GetParent();
+		if(show)
+		{
+			parent.Show();
+			fadeAnimator.Play(Global.str_fadeOut);
+		}
+		else
+			parent.Hide();
+	}
+
+	//GAME DATA
 	public void LateReady()
 	{
 		SetCurrentCheckpoint(Player.Instance.Position);
@@ -144,15 +221,18 @@ public partial class GameManager : Node
 			QueueFree();
 		else
 			Instance = this;
-		Engine.TimeScale = 1;
+		timeLabel.Text = "00:00";
 		SetFruitCounter();
 		SetCameraLimits();
+		GetTree().Paused = false;
+		fadeAnimator.Play(Global.str_fadeIn);
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)
 	{
-		TimerFunction(delta);
+		if(started)
+			TimerFunction(delta);
 	}
 	#endregion <--->
 }

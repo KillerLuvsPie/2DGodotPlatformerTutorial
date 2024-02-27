@@ -6,36 +6,27 @@ public partial class MainMenu : CanvasLayer
 {
     #region VARIABLES
     //SCREENS
-    [Export]
-    private Control mainMenuScreen;
-    [Export]
-    private Control levelSelectScreen;
-    [Export]
-    private Control optionsScreen;
-    [Export]
-    private Control controlsScreen;
+    [Export] private Control mainMenuScreen;
+    [Export] private Control levelSelectScreen;
+    [Export] private Control optionsScreen;
+    [Export] private Control controlsScreen;
+    [Export] private AnimationPlayer fadeAnimator;
 
     //LEVEL STATS PANEL
-    [Export]
-    private HBoxContainer statsContainer;
-    [Export]
-    private Label timeLabel;
-    [Export]
-    private Label deathLabel;
+    [Export] private HBoxContainer statsContainer;
+    [Export] private Label timeLabel;
+    [Export] private Label deathLabel;
 
     //OPTION ELEMENTS
-    [Export]
-    private OptionButton windowModeOptions;
-    [Export]
-    private OptionButton resolutionOptions;
-    [Export]
-    private HSlider musicSlider;
-    [Export]
-    private Label musicSliderLabel;
-    [Export]
-    private HSlider sfxSlider;
-    [Export]
-    private Label sfxSliderLabel;
+    [Export] private OptionButton windowModeOptions;
+    [Export] private OptionButton resolutionOptions;
+    [Export] private HSlider musicSlider;
+    [Export] private Label musicSliderLabel;
+    [Export] private HSlider sfxSlider;
+    [Export] private Label sfxSliderLabel;
+
+    //MUSIC PLAYER
+    [Export] private AudioStreamPlayer musicPlayer;
 
     //CONTROLS REMAPPING
     private string[] controlButtonActions;
@@ -65,14 +56,47 @@ public partial class MainMenu : CanvasLayer
         for(int i = 0; i < GetTree().GetNodesInGroup(Global.levelButtonGroup).Count; i++)
         {
             Button button = (Button)GetTree().GetNodesInGroup(Global.levelButtonGroup)[i];
-            if(i < Global.Instance.UnlockedLevelIndex)
+            if(i < Global.UnlockedLevelIndex)
             {
                 button.Disabled = false;
                 button.MouseFilter = Control.MouseFilterEnum.Stop;
             }
-            button.MouseEntered += () => OnHoverDisplayLevelStats(i);
-            button.MouseExited += HoverExitHideLevelStats;
+            int index = i + 1;
+            button.MouseEntered += () => OnHoverDisplayLevelStats(index);
+            button.MouseExited += OnHoverExitHideLevelStats;
         }
+    }
+
+    private void ShowFadeEffect(bool show)
+    {
+        ColorRect parent = (ColorRect)fadeAnimator.GetParent();
+        if(show)
+        {
+            parent.Show();
+            fadeAnimator.Play(Global.str_fadeOut);
+        }
+        else
+            parent.Hide();
+    }
+    #endregion <--->
+
+    #region COROUTINES
+    private async void FadeOutMusic()
+    {
+        while(Mathf.DbToLinear(musicPlayer.VolumeDb) > 0)
+        {
+            musicPlayer.VolumeDb -= 1;
+            await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+        }
+    }
+
+    private async void SceneTransition(int num)
+    {
+        Global.currentLevelIndex = num;
+        ShowFadeEffect(true);
+        FadeOutMusic();
+        await ToSignal(fadeAnimator, AnimationPlayer.SignalName.AnimationFinished);
+        GetTree().ChangeSceneToFile(Global.GetScenePath());
     }
     #endregion <--->
 
@@ -94,6 +118,16 @@ public partial class MainMenu : CanvasLayer
     {
         GetTree().Quit();
     }
+
+    public void FadeAnimationFinished(string animationName)
+    {
+        if(animationName == Global.str_fadeIn)
+        {
+            ShowFadeEffect(false);
+            musicPlayer.Play();
+        }
+    }
+
     //LEVEL SELECT MENU
     public void LevelSelectBackButtonClick()
     {
@@ -103,26 +137,27 @@ public partial class MainMenu : CanvasLayer
 
     public void LevelButtonClick(int num)
     {
-        Global.Instance.currentLevelIndex = num;
-        GetTree().ChangeSceneToFile(Global.Instance.GetScenePath());
+        SceneTransition(num);
     }
 
     public void OnHoverDisplayLevelStats(int i)
     {
-        /*int seconds;
-        int minutes;*/
-        if(Global.Instance.levelTimeRecords[i] == null)
+        if(Global.levelTimeRecords[i] == null)
             timeLabel.Text = "Time: --:--";
         else
-            timeLabel.Text = Global.Instance.levelTimeRecords[i].ToString();
-        if(Global.Instance.levelDeathRecords[i] == null)
+        {
+            int minutes = Mathf.FloorToInt((float)Global.levelTimeRecords[i] / 60);
+            int seconds = Mathf.FloorToInt((float)Global.levelTimeRecords[i] % 60);
+            timeLabel.Text = "Time: " + minutes.ToString("00") + ":" + seconds.ToString("00");
+        }   
+        if(Global.levelDeathRecords[i] == null)
             deathLabel.Text = "Deaths: ---";
         else
-            deathLabel.Text = Global.Instance.levelDeathRecords[i].ToString();
+            deathLabel.Text = "Deaths: " + Global.levelDeathRecords[i].ToString();
         statsContainer.Show();
     }
 
-    public void HoverExitHideLevelStats()
+    public void OnHoverExitHideLevelStats()
     {
         statsContainer.Hide();
     }
@@ -190,8 +225,10 @@ public partial class MainMenu : CanvasLayer
     #region GODOT FUNCTIONS
     public override void _Ready()
     {
+        GetTree().Paused = false;
         InitializeOptions();
         InitializeButtonLevels();
+        fadeAnimator.Play(Global.str_fadeIn);
     }
     #endregion <--->
 }

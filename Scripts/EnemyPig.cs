@@ -4,13 +4,14 @@ using System;
 public partial class EnemyPig : Node2D
 {
 	#region VARIABLES
+	//CUSTOM SIGNAL
+	[Signal] public delegate void GameStartedEventHandler();
+
 	//EXPORTS
-	[Export]
-	private Marker2D leftBound;
-	[Export]
-	private Marker2D rightBound;
-	[Export]
-	private AnimatedSprite2D animatedSprite2D;
+	[Export] private Marker2D leftBound;
+	[Export] private Marker2D rightBound;
+	[Export] private AnimatedSprite2D animatedSprite2D;
+
 	//PROPERTIES
 	private float speed = 150;
 	private int direction = -1;
@@ -43,16 +44,18 @@ public partial class EnemyPig : Node2D
 			Player.Instance.Die();
 		}		
 	}
-	#endregion <--->
 
-	#region GODOT FUNCTIONS
-	public override void _Ready()
+	public void OnGameStart()
 	{
+		animatedSprite2D.Play("walk");
 	}
+    #endregion <--->
 
-	public override void _PhysicsProcess(double delta)
+    #region GODOT FUNCTIONS
+    public override void _PhysicsProcess(double delta)
 	{
-		MoveCharacter(delta);
+		if(GameManager.Instance.started)
+			MoveCharacter(delta);
 	}
 	#endregion <--->
 }

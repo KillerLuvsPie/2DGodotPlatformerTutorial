@@ -11,6 +11,12 @@ public partial class Global : Node
 	public const string controlButtonGroup = "ControlButtons";
 	public const string levelButtonGroup = "LevelButtons";
 	public const string fruitGroup = "Fruit";
+	public const string enemyGroup = "Enemy";
+	#endregion <--->
+
+	#region ANIMATION NAMES
+	public const string str_fadeIn = "FadeIn";
+	public const string str_fadeOut = "FadeOut";
 	#endregion <--->
 
 	#region OPTION VARIABLES
@@ -23,19 +29,19 @@ public partial class Global : Node
 	#endregion <--->
 
 	#region LEVEL VARIABLES AND FUNCTIONS
-	public int currentLevelIndex = 0;
-	public int UnlockedLevelIndex = 1;
-	public Dictionary<int, float?> levelTimeRecords = new Dictionary<int, float?>();
-	public Dictionary<int, int?> levelDeathRecords = new Dictionary<int, int?>();
+	public static int currentLevelIndex = 0;
+	public static int UnlockedLevelIndex = 1;
+	public static Dictionary<int, double?> levelTimeRecords = new Dictionary<int, double?>();
+	public static Dictionary<int, int?> levelDeathRecords = new Dictionary<int, int?>();
 
-	public string GetScenePath()
+	public static string GetScenePath()
 	{
 		if(currentLevelIndex == 0)
 			return "res://Scenes/MainMenu.scn";
 		return "res://Scenes/Level"+ currentLevelIndex +".scn";
 	}
 
-	private void InitializeLevelLists()
+	private static void InitializeLevelLists()
 	{
 		int levelTotal = 5;
 		for(int i = 1; i <= levelTotal; i++)
@@ -43,13 +49,14 @@ public partial class Global : Node
 			levelTimeRecords.Add(i, null);
 			levelDeathRecords.Add(i, null);
 		}
+		GD.Print("Lists initialized successfully");
 	}
 	#endregion <--->
 
 	#region GODOT FUNCTIONS
 	public override void _Ready()
 	{
-		if(Instance != this && Instance != null)
+		if(Instance != this && Instance != null && IsInstanceValid(Instance))
 			QueueFree();
 		else
 			Instance = this;

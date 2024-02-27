@@ -15,6 +15,7 @@ public partial class Player : CharacterBody2D
 	#region FUNCTIONS
 	public void Die()
 	{
+		GameManager.Instance.pausable = false;
 		GameManager.Instance.playerControl = false;
 		animatedSprite2D.Animation = "die";
 	}
@@ -22,6 +23,7 @@ public partial class Player : CharacterBody2D
 	public void Respawn()
 	{
 		Position = GameManager.Instance.currentCheckpoint;
+		GameManager.Instance.pausable = true;
 		GameManager.Instance.playerControl = true;
 		animatedSprite2D.Play();
 	}
@@ -38,10 +40,6 @@ public partial class Player : CharacterBody2D
 	#region GODOT FUNCTIONS
 	public override void _PhysicsProcess(double delta)
 	{
-		//PAUSE CONTROLS
-		if(Input.IsActionJustPressed("pause") && GameManager.Instance.pausable)
-			GameManager.Instance.TogglePause();
-		
 		//PLAYER CONTROLS AND ANIMATIONS
 		if(GameManager.Instance.playerControl)
 		{
