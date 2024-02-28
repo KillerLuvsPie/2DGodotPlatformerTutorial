@@ -29,7 +29,7 @@ public partial class GameManager : Node
 	[Export] private Marker2D cameraRightBound;
 	[Export] private Marker2D cameraUpperBound;
 
-	//MUSIC PLAYER
+	//AUDIO PLAYERS
 	[Export] private AudioStreamPlayer musicPlayer;
 	
 	//CONTROL
@@ -122,6 +122,14 @@ public partial class GameManager : Node
 		Global.levelTimeRecords[Global.currentLevelIndex] = timeElapsed;
 		Global.levelDeathRecords[Global.currentLevelIndex] = deathCounter;
 	}
+
+	/*public void PlaySound(AudioStream audioStream)
+	{
+		AudioStreamPlayer player = Global.audioPlayerPrefab.Instantiate<AudioStreamPlayer>();
+		GetTree().CurrentScene.AddChild(player);
+		player.Stream = audioStream;
+		player.Play();
+	}*/
 	#endregion <--->
 
 	#region COROUTINES
@@ -197,7 +205,7 @@ public partial class GameManager : Node
 
 	public void ShowFadeEffect(bool show)
 	{
-		ColorRect parent = (ColorRect)fadeAnimator.GetParent();
+		ColorRect parent = fadeAnimator.GetParent<ColorRect>();
 		if(show)
 		{
 			parent.Show();

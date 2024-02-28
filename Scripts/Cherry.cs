@@ -21,6 +21,7 @@ public partial class Cherry : Area2D
 			active = false;
 			GameManager.Instance.DecreaseFruitCounter();
 			animatedSprite2D.Animation = "collected";
+			Global.Instance.PlaySound(Global.sfx_fruitGet);
 		}	
 	}
 	#endregion <--->

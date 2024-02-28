@@ -69,7 +69,7 @@ public partial class MainMenu : CanvasLayer
 
     private void ShowFadeEffect(bool show)
     {
-        ColorRect parent = (ColorRect)fadeAnimator.GetParent();
+        ColorRect parent = fadeAnimator.GetParent<ColorRect>();
         if(show)
         {
             parent.Show();

@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://bhafmts4s8h4r"
+path="res://.godot/imported/sfx_sound_poweron.wav-2562de64c3d8e6fd6bbb554e7b75c4ae.sample"
+
+[deps]
+
+source_file="res://Assets/Sound/SFX/General Sounds/Weird Sounds/sfx_sound_poweron.wav"
+dest_files=["res://.godot/imported/sfx_sound_poweron.wav-2562de64c3d8e6fd6bbb554e7b75c4ae.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=0

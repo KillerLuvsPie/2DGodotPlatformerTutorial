@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://bbynmlt0rnhsv"
+path="res://.godot/imported/sfx_deathscream_human4.wav-f3d570b8a667c97a3b908b1ab9a231f6.sample"
+
+[deps]
+
+source_file="res://Assets/Sound/SFX/Death Screams/Human/sfx_deathscream_human4.wav"
+dest_files=["res://.godot/imported/sfx_deathscream_human4.wav-f3d570b8a667c97a3b908b1ab9a231f6.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=0

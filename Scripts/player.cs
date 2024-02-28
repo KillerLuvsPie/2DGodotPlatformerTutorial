@@ -51,8 +51,11 @@ public partial class Player : CharacterBody2D
 
 			// Handle Jump.
 			if (Input.IsActionJustPressed("jump") && IsOnFloor())
+			{
 				velocity.Y = JumpVelocity;
-
+				Global.Instance.PlaySound(Global.sfx_jump);
+			}
+				
 			// Get the input direction and handle the movement/deceleration.
 			float direction = Input.GetAxis("left", "right");
 			if (direction != 0)

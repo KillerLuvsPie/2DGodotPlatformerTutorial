@@ -7,6 +7,22 @@ public partial class Global : Node
 	//SINGLETON
 	public static Global Instance;
 
+	#region RESOURCES
+	//SFX
+	//UI SFX
+	public static readonly AudioStream sfx_button = GD.Load<AudioStream>("res://Assets/Sound/SFX/General Sounds/Buttons/sfx_sounds_button11.wav");
+	//OBJECT SFX
+	public static readonly AudioStream sfx_fruitGet = GD.Load<AudioStream>("res://Assets/Sound/SFX/General Sounds/Interactions/sfx_sounds_interaction1.wav");
+	//CHARACTER SFX
+	public static readonly AudioStream sfx_jump = GD.Load<AudioStream>("res://Assets/Sound/SFX/Movement/Jumping and Landing/sfx_movement_jump7.wav");
+	//public static readonly AudioStream sfx_death = GD.Load<AudioStream>("");
+	
+	#endregion <--->
+
+	#region INSTANTIABLE OBJECTS
+	public static readonly PackedScene audioPlayerPrefab = GD.Load<PackedScene>("res://Prefabs/sfx_player.res");
+	#endregion <--->
+
 	#region GROUP NAMES
 	public const string controlButtonGroup = "ControlButtons";
 	public const string levelButtonGroup = "LevelButtons";
@@ -50,6 +66,16 @@ public partial class Global : Node
 			levelDeathRecords.Add(i, null);
 		}
 		GD.Print("Lists initialized successfully");
+	}
+	#endregion <--->
+
+	#region SOUND FUNCTIONS
+	public void PlaySound(AudioStream audioStream)
+	{
+		AudioStreamPlayer audioPlayer = audioPlayerPrefab.Instantiate<AudioStreamPlayer>();
+		GetTree().CurrentScene.AddChild(audioPlayer);
+		audioPlayer.Stream = audioStream;
+		audioPlayer.Play();
 	}
 	#endregion <--->
 
