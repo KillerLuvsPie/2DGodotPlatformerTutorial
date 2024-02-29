@@ -68,6 +68,11 @@ public partial class GameManager : Node
 		currentCheckpoint = pos;
 	}
 
+	private void SetMusicVolume(float volumePercentage)
+	{
+		musicPlayer.VolumeDb = Mathf.LinearToDb(volumePercentage / 100);
+	}
+
 	public void DecreaseFruitCounter()
 	{
 		fruitCounter--;
@@ -87,6 +92,10 @@ public partial class GameManager : Node
 	{
 		GetTree().Paused = !GetTree().Paused;
 		pauseMenu.Visible = !pauseMenu.Visible;
+		if(GetTree().Paused == true)
+			SetMusicVolume(20);
+		else
+			SetMusicVolume(100);
 	}
 
 	private void TimerFunction(double delta)
@@ -102,6 +111,7 @@ public partial class GameManager : Node
 		if(fruitCounter == 0)
 		{
 			pausable = false;
+			SetMusicVolume(20);
 			GetTree().Paused = true;
 			deathTotal.Text = "Deaths: " + deathCounter.ToString();
 			timeTotal.Text = "Time cleared: " + minutes.ToString("00") + ":" + seconds.ToString("00");
@@ -114,6 +124,7 @@ public partial class GameManager : Node
 	{
 		deathCounter++;
 		loseScreen.Visible = true;
+		SetMusicVolume(20);
 		GetTree().Paused = true;
 	}
 
@@ -178,6 +189,7 @@ public partial class GameManager : Node
 	public void OnRetryButtonPressed()
 	{
 		loseScreen.Visible = false;
+		SetMusicVolume(100);
 		GetTree().Paused = false;
 		Player.Instance.Respawn();	
 	}

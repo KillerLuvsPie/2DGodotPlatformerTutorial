@@ -7,6 +7,7 @@ public partial class Player : CharacterBody2D
 	public static Player Instance;
 	public const float Speed = 400.0f;
 	public const float JumpVelocity = -1000.0f;
+	private static bool justLanded = true;
 	public AnimatedSprite2D animatedSprite2D;
 	// Get the gravity from the project settings to be synced with RigidBody nodes.
 	public float gravity = ProjectSettings.GetSetting("physics/2d/default_gravity").AsSingle();
@@ -30,6 +31,24 @@ public partial class Player : CharacterBody2D
 	#endregion <--->
 
 	#region SIGNALS
+	public void OnSpriteFrameChanged()
+	{
+		switch (animatedSprite2D.Animation)
+		{
+			case "die":
+				switch (animatedSprite2D.Frame)
+				{
+					case 0:
+						Global.Instance.PlaySound(Global.sfx_deaths[0]);
+					break;
+					case 7:
+						Global.Instance.PlaySound(Global.sfx_deaths[1]);
+					break;
+				}
+			break;
+		}
+	}
+
 	public void OnSpriteAnimationFinished()
 	{
 		if(animatedSprite2D.Animation == "die")
@@ -47,7 +66,16 @@ public partial class Player : CharacterBody2D
 
 			// Add the gravity.
 			if (!IsOnFloor())
+			{
 				velocity.Y += gravity * (float)delta;
+				justLanded = false;
+			}
+				
+			else if(IsOnFloor() && justLanded == false)
+			{
+				justLanded = true;
+				Global.Instance.PlaySound(Global.sfx_landing, 300f);
+			}
 
 			// Handle Jump.
 			if (Input.IsActionJustPressed("jump") && IsOnFloor())

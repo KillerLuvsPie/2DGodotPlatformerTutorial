@@ -10,6 +10,7 @@ public partial class MainMenu : CanvasLayer
     [Export] private Control levelSelectScreen;
     [Export] private Control optionsScreen;
     [Export] private Control controlsScreen;
+    [Export] private Control creditsScreen;
     [Export] private AnimationPlayer fadeAnimator;
 
     //LEVEL STATS PANEL
@@ -45,9 +46,9 @@ public partial class MainMenu : CanvasLayer
         }
 
         //SOUND
-        musicSlider.Value = Mathf.DbToLinear(AudioServer.GetBusVolumeDb(AudioServer.GetBusIndex("Music")));
+        musicSlider.Value = Global.musicVolumePercent / 100;
         musicSliderLabel.Text = (musicSlider.Value * 100).ToString("0") + "%";
-        sfxSlider.Value = Mathf.DbToLinear(AudioServer.GetBusVolumeDb(AudioServer.GetBusIndex("SFX")));
+        sfxSlider.Value = Global.sfxVolumePercent / 100;
         sfxSliderLabel.Text = (sfxSlider.Value * 100).ToString("0") + "%";
     }
 
@@ -112,6 +113,12 @@ public partial class MainMenu : CanvasLayer
     {
         mainMenuScreen.Visible = false;
         optionsScreen.Visible = true;
+    }
+
+    public void CreditsButtonClick()
+    {
+        mainMenuScreen.Visible = false;
+        creditsScreen.Visible = true;
     }
 
     public void QuitButtonClick()
@@ -219,6 +226,18 @@ public partial class MainMenu : CanvasLayer
     {
         controlsScreen.Visible = false;
         optionsScreen.Visible = true;
+    }
+
+    //CREDITS MENU
+    public void CreditsBackButtonClick()
+    {
+        creditsScreen.Visible = false;
+        mainMenuScreen.Visible = true;
+    }
+
+    public void OnLinkClick(string url)
+    {
+        OS.ShellOpen(url);
     }
     #endregion <--->
 

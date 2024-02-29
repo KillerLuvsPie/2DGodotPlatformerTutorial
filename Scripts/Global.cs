@@ -15,7 +15,12 @@ public partial class Global : Node
 	public static readonly AudioStream sfx_fruitGet = GD.Load<AudioStream>("res://Assets/Sound/SFX/General Sounds/Interactions/sfx_sounds_interaction1.wav");
 	//CHARACTER SFX
 	public static readonly AudioStream sfx_jump = GD.Load<AudioStream>("res://Assets/Sound/SFX/Movement/Jumping and Landing/sfx_movement_jump7.wav");
-	//public static readonly AudioStream sfx_death = GD.Load<AudioStream>("");
+	public static readonly AudioStream sfx_landing = GD.Load<AudioStream>("res://Assets/Sound/SFX/Movement/Jumping and Landing/sfx_movement_jump9_landing.wav");
+	public static readonly AudioStream[] sfx_deaths =
+	{
+		GD.Load<AudioStream>("res://Assets/Sound/SFX/General Sounds/Negative Sounds/sfx_sounds_damage1.wav"),
+		GD.Load<AudioStream>("res://Assets/Sound/SFX/Explosions/Short/sfx_exp_short_soft7.wav")
+	};
 	
 	#endregion <--->
 
@@ -42,6 +47,9 @@ public partial class Global : Node
 		{"1280 x 720", new Vector2I(1280, 720)},
 		{"1920 x 1080", new Vector2I(1920, 1080)} 
 	};
+
+	public static float musicVolumePercent = 80;
+	public static float sfxVolumePercent = 100;
 	#endregion <--->
 
 	#region LEVEL VARIABLES AND FUNCTIONS
@@ -70,11 +78,12 @@ public partial class Global : Node
 	#endregion <--->
 
 	#region SOUND FUNCTIONS
-	public void PlaySound(AudioStream audioStream)
+	public void PlaySound(AudioStream audioStream, float volumePercentage = 100)
 	{
 		AudioStreamPlayer audioPlayer = audioPlayerPrefab.Instantiate<AudioStreamPlayer>();
 		GetTree().CurrentScene.AddChild(audioPlayer);
 		audioPlayer.Stream = audioStream;
+		audioPlayer.VolumeDb = Mathf.LinearToDb(volumePercentage / 100);
 		audioPlayer.Play();
 	}
 	#endregion <--->
