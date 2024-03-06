@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public partial class Cherry : Area2D
+public partial class Fruit : Area2D
 {
 	#region VARIABLES
 	private bool active = true;

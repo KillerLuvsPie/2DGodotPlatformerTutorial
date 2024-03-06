@@ -84,8 +84,11 @@ public partial class GameManager : Node
 	{
 		for(int i = 0; i < GetTree().GetNodesInGroup(Global.enemyGroup).Count; i++)
 		{
-			EnemyPig enemyPig = GetTree().GetNodesInGroup(Global.enemyGroup)[i].GetNode<EnemyPig>(".");
-			enemyPig.EmitSignal(EnemyPig.SignalName.GameStarted);
+			if(GetTree().GetNodesInGroup(Global.enemyGroup)[i].GetType() == typeof(EnemyPig))
+			{
+				EnemyPig enemyPig = GetTree().GetNodesInGroup(Global.enemyGroup)[i].GetNode<EnemyPig>(".");
+				enemyPig.EmitSignal(EnemyPig.SignalName.GameStarted);
+			}
 		}
 	}
 	public void TogglePause()
@@ -93,9 +96,15 @@ public partial class GameManager : Node
 		GetTree().Paused = !GetTree().Paused;
 		pauseMenu.Visible = !pauseMenu.Visible;
 		if(GetTree().Paused == true)
+		{
 			SetMusicVolume(20);
+			Global.Instance.PlaySound(Global.sfx_pause, 75);
+		}
 		else
+		{
 			SetMusicVolume(100);
+			Global.Instance.PlaySound(Global.sfx_unpause);
+		}	
 	}
 
 	private void TimerFunction(double delta)
@@ -112,6 +121,7 @@ public partial class GameManager : Node
 		{
 			pausable = false;
 			SetMusicVolume(20);
+			Global.Instance.PlaySound(Global.sfx_win);
 			GetTree().Paused = true;
 			deathTotal.Text = "Deaths: " + deathCounter.ToString();
 			timeTotal.Text = "Time cleared: " + minutes.ToString("00") + ":" + seconds.ToString("00");
@@ -153,7 +163,7 @@ public partial class GameManager : Node
 			countdownDisplay.Texture = countdownSprites[timer];
 			countdownAnimation.Play(Global.str_fadeOut);
 			timer--;
-			await ToSignal(GetTree().CreateTimer(1f), Timer.SignalName.Timeout);
+			await ToSignal(GetTree().CreateTimer(1f, false), Timer.SignalName.Timeout);
 		}
 		started = true;
 		playerControl = true;
@@ -161,7 +171,7 @@ public partial class GameManager : Node
 		countdownAnimation.Play();
 		countdownDisplay.Texture = countdownSprites[timer];
 		MoveEnemies();
-		await ToSignal(GetTree().CreateTimer(1f), Timer.SignalName.Timeout);
+		await ToSignal(GetTree().CreateTimer(1f, false), Timer.SignalName.Timeout);
 		countdownDisplay.Hide();
 	}
 

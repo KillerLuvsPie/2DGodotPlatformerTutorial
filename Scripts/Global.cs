@@ -11,9 +11,14 @@ public partial class Global : Node
 	//SFX
 	//UI SFX
 	public static readonly AudioStream sfx_button = GD.Load<AudioStream>("res://Assets/Sound/SFX/General Sounds/Buttons/sfx_sounds_button11.wav");
+	public static readonly AudioStream sfx_pause = GD.Load<AudioStream>("res://Assets/Sound/SFX/General Sounds/Pause Sounds/sfx_sounds_pause1_in.wav");
+	public static readonly AudioStream sfx_unpause = GD.Load<AudioStream>("res://Assets/Sound/SFX/General Sounds/Pause Sounds/sfx_sounds_pause1_out.wav");
+	public static readonly AudioStream sfx_win = GD.Load<AudioStream>("res://Assets/Sound/SFX/General Sounds/Positive Sounds/sfx_sounds_powerup18.wav");
+
 	//OBJECT SFX
 	public static readonly AudioStream sfx_fruitGet = GD.Load<AudioStream>("res://Assets/Sound/SFX/General Sounds/Interactions/sfx_sounds_interaction1.wav");
-	//CHARACTER SFX
+
+	//PLAYER SFX
 	public static readonly AudioStream sfx_jump = GD.Load<AudioStream>("res://Assets/Sound/SFX/Movement/Jumping and Landing/sfx_movement_jump7.wav");
 	public static readonly AudioStream sfx_landing = GD.Load<AudioStream>("res://Assets/Sound/SFX/Movement/Jumping and Landing/sfx_movement_jump9_landing.wav");
 	public static readonly AudioStream[] sfx_deaths =
@@ -21,11 +26,15 @@ public partial class Global : Node
 		GD.Load<AudioStream>("res://Assets/Sound/SFX/General Sounds/Negative Sounds/sfx_sounds_damage1.wav"),
 		GD.Load<AudioStream>("res://Assets/Sound/SFX/Explosions/Short/sfx_exp_short_soft7.wav")
 	};
+
+	//ENEMY SFX
+	public static readonly AudioStream sfx_trunkShoot = GD.Load<AudioStream>("res://Assets/Sound/SFX/Weapons/Single Shot Sounds/sfx_weapon_singleshot12.wav");
 	
 	#endregion <--->
 
 	#region INSTANTIABLE OBJECTS
 	public static readonly PackedScene audioPlayerPrefab = GD.Load<PackedScene>("res://Prefabs/sfx_player.res");
+	public static readonly PackedScene enemyBullet = GD.Load<PackedScene>("res://Prefabs/enemy_bullet.res");
 	#endregion <--->
 
 	#region GROUP NAMES
@@ -85,6 +94,13 @@ public partial class Global : Node
 		audioPlayer.Stream = audioStream;
 		audioPlayer.VolumeDb = Mathf.LinearToDb(volumePercentage / 100);
 		audioPlayer.Play();
+	}
+	#endregion <--->
+
+	#region MATH FUNCTIONS
+	public static Vector2 GetAbsVector2(Vector2 vec)
+	{
+		return new Vector2(Mathf.Abs(vec.X), Mathf.Abs(vec.Y));
 	}
 	#endregion <--->
 

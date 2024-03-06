@@ -19,6 +19,7 @@ public partial class Player : CharacterBody2D
 		GameManager.Instance.pausable = false;
 		GameManager.Instance.playerControl = false;
 		animatedSprite2D.Animation = "die";
+		Global.Instance.PlaySound(Global.sfx_deaths[0]);
 	}
 
 	public void Respawn()
@@ -38,9 +39,6 @@ public partial class Player : CharacterBody2D
 			case "die":
 				switch (animatedSprite2D.Frame)
 				{
-					case 0:
-						Global.Instance.PlaySound(Global.sfx_deaths[0]);
-					break;
 					case 7:
 						Global.Instance.PlaySound(Global.sfx_deaths[1]);
 					break;
@@ -67,11 +65,14 @@ public partial class Player : CharacterBody2D
 			// Add the gravity.
 			if (!IsOnFloor())
 			{
+				if(Input.IsActionJustReleased("jump") && velocity.Y < -100)
+					velocity.Y = -100;
+	
 				velocity.Y += gravity * (float)delta;
 				justLanded = false;
 			}
 				
-			else if(IsOnFloor() && justLanded == false)
+			if(IsOnFloor() && justLanded == false)
 			{
 				justLanded = true;
 				Global.Instance.PlaySound(Global.sfx_landing, 300f);
