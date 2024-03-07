@@ -16,10 +16,13 @@ public partial class Player : CharacterBody2D
 	#region FUNCTIONS
 	public void Die()
 	{
-		GameManager.Instance.pausable = false;
-		GameManager.Instance.playerControl = false;
-		animatedSprite2D.Animation = "die";
-		Global.Instance.PlaySound(Global.sfx_deaths[0]);
+		if(GameManager.Instance.playerControl)
+		{
+			GameManager.Instance.pausable = false;
+			GameManager.Instance.playerControl = false;
+			animatedSprite2D.Animation = "die";
+			Global.Instance.PlaySound(Global.sfx_deaths[0]);
+		}
 	}
 
 	public void Respawn()

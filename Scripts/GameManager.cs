@@ -142,6 +142,8 @@ public partial class GameManager : Node
 	{
 		Global.levelTimeRecords[Global.currentLevelIndex] = timeElapsed;
 		Global.levelDeathRecords[Global.currentLevelIndex] = deathCounter;
+		if(Global.UnlockedLevelIndex <= Global.currentLevelIndex && Global.UnlockedLevelIndex < 5)
+			Global.UnlockedLevelIndex = Global.currentLevelIndex + 1;
 	}
 
 	/*public void PlaySound(AudioStream audioStream)

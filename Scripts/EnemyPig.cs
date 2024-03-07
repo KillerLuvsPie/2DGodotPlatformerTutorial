@@ -18,6 +18,13 @@ public partial class EnemyPig : Node2D
 	#endregion <--->
 
 	#region FUNCTIONS
+	private void InvertDirection()
+	{
+		if(direction == 1)
+			direction = -1;
+		else
+			direction = 1;
+	}
 	private void MoveCharacter(double delta)
 	{
 		if(Position <= leftBound.Position && direction < 0)
@@ -35,7 +42,12 @@ public partial class EnemyPig : Node2D
 		if(body.IsInGroup("Player"))
 		{
 			Player.Instance.Die();
-		}		
+		}
+		if(body.Name == "TileMap")
+		{
+			InvertDirection();
+		}
+		
 	}
 
 	public void OnGameStart()
