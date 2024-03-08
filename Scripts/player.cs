@@ -4,9 +4,14 @@ using System;
 public partial class Player : CharacterBody2D
 {
 	#region VARIABLES
+	//SINGLETON
 	public static Player Instance;
-	public const float Speed = 400.0f;
-	public const float JumpVelocity = -1000.0f;
+
+	//PROPERTIES
+	[Export] private const float Speed = 400.0f;
+	[Export] private const float JumpVelocity = -1000.0f;
+
+	private static float acceleration = 30f;
 	private static bool justLanded = true;
 	public AnimatedSprite2D animatedSprite2D;
 	// Get the gravity from the project settings to be synced with RigidBody nodes.
@@ -14,14 +19,21 @@ public partial class Player : CharacterBody2D
 	#endregion <--->
 
 	#region FUNCTIONS
-	public void Die()
+	public void Die(bool fallDeath = false)
 	{
 		if(GameManager.Instance.playerControl)
 		{
 			GameManager.Instance.pausable = false;
 			GameManager.Instance.playerControl = false;
-			animatedSprite2D.Animation = "die";
-			Global.Instance.PlaySound(Global.sfx_deaths[0]);
+			if(fallDeath)
+			{
+				Global.Instance.PlaySound(Global.sfx_fall);
+			}
+			else
+			{
+				animatedSprite2D.Animation = "die";
+				Global.Instance.PlaySound(Global.sfx_deaths[0]);
+			}
 		}
 	}
 
@@ -92,11 +104,11 @@ public partial class Player : CharacterBody2D
 			float direction = Input.GetAxis("left", "right");
 			if (direction != 0)
 			{
-				velocity.X = direction * Speed;
+				velocity.X = Mathf.MoveToward(Velocity.X, direction * Speed, acceleration);
 			}
 			else
 			{
-				velocity.X = Mathf.MoveToward(Velocity.X, 0, 40);
+				velocity.X = Mathf.MoveToward(Velocity.X, 0, acceleration);
 			}
 
 			if(Input.IsActionJustPressed("fall") && IsOnFloor())
@@ -106,6 +118,10 @@ public partial class Player : CharacterBody2D
 
 			Velocity = velocity;
 			MoveAndSlide();
+
+			//FALL DEATH
+			if(Position.Y > GameManager.Instance.cameraBottomBound.Position.Y + 20)
+				Die(true);
 
 			//ANIMATION CONTROL
 			//FLIP SPRITE

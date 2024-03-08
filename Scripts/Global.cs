@@ -21,6 +21,7 @@ public partial class Global : Node
 	//PLAYER SFX
 	public static readonly AudioStream sfx_jump = GD.Load<AudioStream>("res://Assets/Sound/SFX/Movement/Jumping and Landing/sfx_movement_jump7.wav");
 	public static readonly AudioStream sfx_landing = GD.Load<AudioStream>("res://Assets/Sound/SFX/Movement/Jumping and Landing/sfx_movement_jump9_landing.wav");
+	public static readonly AudioStream sfx_fall = GD.Load<AudioStream>("res://Assets/Sound/SFX/Movement/Falling Sounds/sfx_sounds_falling1.wav");
 	public static readonly AudioStream[] sfx_deaths =
 	{
 		GD.Load<AudioStream>("res://Assets/Sound/SFX/General Sounds/Negative Sounds/sfx_sounds_damage1.wav"),

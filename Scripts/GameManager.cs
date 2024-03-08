@@ -25,7 +25,7 @@ public partial class GameManager : Node
 	//CAMERA
 	[Export] private Camera2D camera2D;
 	[Export] private Marker2D cameraLeftBound;
-	[Export] private Marker2D cameraBottomBound;
+	[Export] public Marker2D cameraBottomBound;
 	[Export] private Marker2D cameraRightBound;
 	[Export] private Marker2D cameraUpperBound;
 

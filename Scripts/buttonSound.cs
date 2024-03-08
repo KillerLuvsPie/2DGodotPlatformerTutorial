@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public partial class buttonSound : Button
+public partial class ButtonSound : Button
 {
 	public void OnClick()
 	{
