@@ -3,12 +3,9 @@ using System;
 
 public partial class Spikeball : Node2D
 {
-	[Export]
-	private int rotationDirection = 1;
-	[Export]
-	private float speed = 5;
-	[Export]
-	private Sprite2D ballSprite;
+	[Export] private int rotationDirection = 1;
+	[Export] private float speed = 5;
+	[Export] private Sprite2D ballSprite;
 
 	private void OnBallBodyEntered(Node2D body)
 	{
