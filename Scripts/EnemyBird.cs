@@ -10,7 +10,7 @@ public partial class EnemyBird : Area2D
 	[Export] private AnimatedSprite2D animatedSprite2D;
 
 	//PROPERTIES
-	[Export] private float speed = 0.75f;
+	[Export] private float speed = 100f;
 	[Export] private int direction = -1;
 	private float acceleration = 0;
 	#endregion <--->
@@ -32,7 +32,7 @@ public partial class EnemyBird : Area2D
 			direction = -1;
 		
 		acceleration = Mathf.Clamp(acceleration + (float)delta * direction, -1, 1);
-		Translate((rightBottomBound.Position - leftTopBound.Position) * speed * acceleration * (float)delta);
+		Translate((rightBottomBound.Position - leftTopBound.Position).Normalized() * speed * acceleration * (float)delta);
 	}
 	#endregion <--->
 
