@@ -8,6 +8,7 @@ public partial class MovingPlatform : Node2D
 	[Export] private PathFollow2D pathPoint;
 	[Export] private Line2D line;
 	[Export] private CompressedTexture2D pointTexture;
+	[Export] private Vector2 pointTextureScale = new Vector2(1,1);
 	[Export] private float speed = 0.25f;
 	#endregion <--->
 
@@ -22,6 +23,11 @@ public partial class MovingPlatform : Node2D
     #endregion <--->
 
     #region SIGNALS
+	public void OnBodyEntered(Node2D body)
+	{
+		if(body.IsInGroup(Global.playerGroup))
+			Player.Instance.Die();
+	}
     #endregion <--->
 
     #region GODOT FUNCTIONS
@@ -34,6 +40,7 @@ public partial class MovingPlatform : Node2D
 			Sprite2D sprite = new Sprite2D();
 			sprite.Texture = pointTexture;
 			sprite.Position = point;
+			sprite.Scale = pointTextureScale;
 			path.AddChild(sprite);
 		}
     }
@@ -41,6 +48,7 @@ public partial class MovingPlatform : Node2D
 	{
 		pathPoint.ProgressRatio += speed * (float)delta;
 		ChangeDirection();
+		GD.Print(Name + ": " + pathPoint.ProgressRatio + " |||| Speed: " + speed + " * Delta: " + delta + " = " + (speed * delta));
 	}
 	#endregion <--->
 }
