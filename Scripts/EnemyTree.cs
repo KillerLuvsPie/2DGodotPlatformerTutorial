@@ -18,11 +18,15 @@ public partial class EnemyTree : AnimatableBody2D
 	[Export] private float speed = 75;
 	[Export] private int direction = -1;
 	[Export] private float shotCooldown = 1.5f;
+	[Export] private float startupWait = 0;
+	private bool test = false;
 	#endregion <--->
 
 	#region FUNCTIONS
 	private async void Shoot()
 	{
+		if(startupWait > 0)
+			await ToSignal(GetTree().CreateTimer(startupWait, false), Timer.SignalName.Timeout);
 		bool shoot = true;
 		while(shoot)
 		{
@@ -62,13 +66,14 @@ public partial class EnemyTree : AnimatableBody2D
 	#region GODOT FUNCTIONS
 	public override void _Ready()
 	{
+		animatedSprite2D.FlipH = direction == 1;
+		shotSpawnPoint.Position = new Vector2(shotSpawnPoint.Position.X * direction, shotSpawnPoint.Position.Y);
 		Shoot();
 	}
 
 	public override void _PhysicsProcess(double delta)
 	{
-		animatedSprite2D.FlipH = direction == 1;
-		shotSpawnPoint.Position = Global.GetAbsVector2(shotSpawnPoint.Position) * direction;
+		
 	}
 	#endregion <--->
 }

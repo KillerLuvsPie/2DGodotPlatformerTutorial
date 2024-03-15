@@ -48,7 +48,6 @@ public partial class MovingPlatform : Node2D
 	{
 		pathPoint.ProgressRatio += speed * (float)delta;
 		ChangeDirection();
-		GD.Print(Name + ": " + pathPoint.ProgressRatio + " |||| Speed: " + speed + " * Delta: " + delta + " = " + (speed * delta));
 	}
 	#endregion <--->
 }
