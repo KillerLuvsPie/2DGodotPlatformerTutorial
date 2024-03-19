@@ -47,7 +47,6 @@ public partial class EnemyPig : Node2D
 		{
 			InvertDirection();
 		}
-		
 	}
 
 	public void OnGameStart()
