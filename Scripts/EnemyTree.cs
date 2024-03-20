@@ -55,7 +55,7 @@ public partial class EnemyTree : AnimatableBody2D
 						bullet.Position = shotSpawnPoint.GlobalPosition;
 						bullet.GetNode<EnemyBullet>(".").SetProperties(direction);
 						GetTree().CurrentScene.AddChild(bullet);
-						Global.Instance.PlaySound(Global.sfx_trunkShoot, 25);
+						Global.Instance.PlayPositionalSound(Global.sfx_treeShoot, shotSpawnPoint.GlobalPosition, 75);
 					break;
 				}
 			break;

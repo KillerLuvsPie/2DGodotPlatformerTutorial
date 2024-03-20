@@ -29,12 +29,14 @@ public partial class Global : Node
 	};
 
 	//ENEMY SFX
-	public static readonly AudioStream sfx_trunkShoot = GD.Load<AudioStream>("res://Assets/Sound/SFX/Weapons/Single Shot Sounds/sfx_weapon_singleshot12.wav");
+	public static readonly AudioStream sfx_treeShoot = GD.Load<AudioStream>("res://Assets/Sound/SFX/Weapons/Single Shot Sounds/sfx_weapon_singleshot12.wav");
+	public static readonly AudioStream sfx_thud = GD.Load<AudioStream>("res://Assets/Sound/SFX/Weapons/Shotgun/sfx_weapon_shotgun3.wav");
 	
 	#endregion <--->
 
 	#region INSTANTIABLE OBJECTS
 	public static readonly PackedScene audioPlayerPrefab = GD.Load<PackedScene>("res://Prefabs/sfx_player.res");
+	public static readonly PackedScene positionalAudioPlayerPrefab = GD.Load<PackedScene>("res://Prefabs/sfx_positionalplayer.res");
 	public static readonly PackedScene enemyBullet = GD.Load<PackedScene>("res://Prefabs/enemy_bullet.res");
 	#endregion <--->
 
@@ -94,6 +96,16 @@ public partial class Global : Node
 	{
 		AudioStreamPlayer audioPlayer = audioPlayerPrefab.Instantiate<AudioStreamPlayer>();
 		GetTree().CurrentScene.AddChild(audioPlayer);
+		audioPlayer.Stream = audioStream;
+		audioPlayer.VolumeDb = Mathf.LinearToDb(volumePercentage / 100);
+		audioPlayer.Play();
+	}
+
+	public void PlayPositionalSound(AudioStream audioStream, Vector2 position, float volumePercentage = 100)
+	{
+		AudioStreamPlayer2D audioPlayer = positionalAudioPlayerPrefab.Instantiate<AudioStreamPlayer2D>();
+		GetTree().CurrentScene.AddChild(audioPlayer);
+		audioPlayer.Position = position;
 		audioPlayer.Stream = audioStream;
 		audioPlayer.VolumeDb = Mathf.LinearToDb(volumePercentage / 100);
 		audioPlayer.Play();

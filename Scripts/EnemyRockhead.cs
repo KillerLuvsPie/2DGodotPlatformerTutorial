@@ -126,6 +126,7 @@ public partial class EnemyRockhead : Area2D
 			}
 			acceleration = 0;
 			direction = Vector2.Zero;
+			Global.Instance.PlayPositionalSound(Global.sfx_thud, GlobalPosition);
 		}
 
 	}
