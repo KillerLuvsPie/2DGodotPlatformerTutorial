@@ -45,8 +45,10 @@ public partial class Global : Node
 	public const string levelButtonGroup = "LevelButtons";
 	public const string fruitGroup = "Fruit";
 	public const string enemyGroup = "Enemy";
+	public const string bossGroup = "Boss";
 	public const string playerGroup = "Player";
 	public const string platformGroup = "Platform";
+	public const string switchGroup = "Switch";
 	#endregion <--->
 
 	#region ANIMATION NAMES

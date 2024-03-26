@@ -145,14 +145,6 @@ public partial class GameManager : Node
 		if(Global.UnlockedLevelIndex <= Global.currentLevelIndex && Global.UnlockedLevelIndex < 5)
 			Global.UnlockedLevelIndex = Global.currentLevelIndex + 1;
 	}
-
-	/*public void PlaySound(AudioStream audioStream)
-	{
-		AudioStreamPlayer player = Global.audioPlayerPrefab.Instantiate<AudioStreamPlayer>();
-		GetTree().CurrentScene.AddChild(player);
-		player.Stream = audioStream;
-		player.Play();
-	}*/
 	#endregion <--->
 
 	#region COROUTINES

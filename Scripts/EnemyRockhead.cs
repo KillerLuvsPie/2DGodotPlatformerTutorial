@@ -94,7 +94,7 @@ public partial class EnemyRockhead : Area2D
 
 	public void OnTriggerAreaEnter(Node2D body)
 	{
-		if(body.Name == Global.playerGroup && active == false && (animatedSprite2D.Animation == "blink" || animatedSprite2D.Animation == "idle"))
+		if(body.IsInGroup(Global.playerGroup) && active == false && (animatedSprite2D.Animation == "blink" || animatedSprite2D.Animation == "idle"))
 		{
 			active = true;
 			Move();
@@ -103,7 +103,7 @@ public partial class EnemyRockhead : Area2D
 
 	public void OnObjectAreaEnter(Node2D body)
 	{
-		if(body.Name == Global.playerGroup)
+		if(body.IsInGroup(Global.playerGroup))
 		{
 			Player.Instance.Die();
 		}
@@ -128,7 +128,6 @@ public partial class EnemyRockhead : Area2D
 			direction = Vector2.Zero;
 			Global.Instance.PlayPositionalSound(Global.sfx_thud, GlobalPosition);
 		}
-
 	}
 	#endregion <--->
 
