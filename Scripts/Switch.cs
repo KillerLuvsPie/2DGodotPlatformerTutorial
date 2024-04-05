@@ -5,8 +5,9 @@ public partial class Switch : StaticBody2D
 {
 	#region VARIABLES
 	[Export] public AnimatedSprite2D animatedSprite2D;
-	[Export] public Node2D westGate;
-	[Export] public Node2D eastGate;
+	[Export] public AnimatableBody2D westGate;
+	[Export] public AnimatableBody2D eastGate;
+	private bool stopAction = false;
 	#endregion <--->
 
 	#region FUNCTIONS
@@ -19,6 +20,7 @@ public partial class Switch : StaticBody2D
 				node.animatedSprite2D.Animation = "on";
 			else
 				node.animatedSprite2D.Animation = "off";
+			Global.Instance.PlaySound(Global.sfx_switch, 80);
 		}
 	}
 	private void ActivateSwitches()
@@ -26,37 +28,60 @@ public partial class Switch : StaticBody2D
 		ToggleSwitchState();
 		RotateGates(true);
 	}
+
+	private void SetGatesBossLayerState(bool state)
+	{
+		westGate.SetCollisionLayerValue(2, state);
+		westGate.SetCollisionMaskValue(2, state);
+		eastGate.SetCollisionLayerValue(2, state);
+		eastGate.SetCollisionMaskValue(2, state);
+	}
 	#endregion <--->
 
 	#region COROUTINES
 	public async void RotateGates(bool open)
 	{
 		float gateSpeed = 1;
+		stopAction = false;
 		if(open)
 		{
-			while(westGate.RotationDegrees > 0)
+			//WAIT FOR GATE TO FINISH OPENING
+			while(westGate.RotationDegrees > 0 && stopAction == false)
 			{
 				westGate.Rotate(-gateSpeed * (float)GetPhysicsProcessDeltaTime());
 				eastGate.Rotate(gateSpeed * (float)GetPhysicsProcessDeltaTime());
 				await ToSignal(GetTree(), SceneTree.SignalName.PhysicsFrame);
 			}
-			for(int i = 0; i < GetTree().GetNodesInGroup(Global.enemyGroup).Count; i++)
+			//ACTIVATE RHINO
+			if(stopAction == false)
 			{
-				Node2D node = (Node2D)GetTree().GetNodesInGroup(Global.enemyGroup)[i];
-				if(node.Owner.Name.ToString().Contains("rhino"))
-					node.GetNode<EnemyRhino>(".").active = true;
+				for(int i = 0; i < GetTree().GetNodesInGroup(Global.enemyGroup).Count; i++)
+				{
+					Node2D node = (Node2D)GetTree().GetNodesInGroup(Global.enemyGroup)[i];
+					if(node.Owner.Name.ToString().Contains("rhino"))
+						node.GetNode<EnemyRhino>(".").active = true;
+				}
 			}
+			
 		}
 		else
 		{
-			while(westGate.RotationDegrees < 90)
+			SetGatesBossLayerState(false);
+			while(westGate.RotationDegrees < 90 && stopAction == false)
 			{
 				westGate.Rotate(gateSpeed * (float)GetPhysicsProcessDeltaTime());
 				eastGate.Rotate(-gateSpeed * (float)GetPhysicsProcessDeltaTime());
 				await ToSignal(GetTree(), SceneTree.SignalName.PhysicsFrame);
 			}
-			ToggleSwitchState();
+			SetGatesBossLayerState(true);
+			if(stopAction == false)
+				ToggleSwitchState();
 		}
+	}
+
+	private void AssignToSignal()
+	{
+		GameManager.Instance.Respawn += ResetGates;
 	}
 	#endregion
 
@@ -66,13 +91,25 @@ public partial class Switch : StaticBody2D
 		if(body.IsInGroup(Global.bossGroup) && animatedSprite2D.Animation == "off")
 			ActivateSwitches();
 	}
-	#endregion <--->
 
-	#region GODOT FUNCTIONS
-
-	public override void _Process(double delta)
+	private void ResetGates()
 	{
-		GD.Print(westGate.Rotation);
+		stopAction = true;
+		eastGate.GlobalRotationDegrees = 90;
+		westGate.GlobalRotationDegrees = 90;
+		animatedSprite2D.Animation = "off";
+	}
+    #endregion <--->
+
+    #region GODOT FUNCTIONS
+    public override void _Ready()
+    {
+        CallDeferred("AssignToSignal");
+    }
+
+    public override void _Process(double delta)
+	{
+	
 	}
 	#endregion <--->
 }

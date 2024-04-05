@@ -4,8 +4,6 @@ using System;
 public partial class EnemyPig : Node2D
 {
 	#region VARIABLES
-	//CUSTOM SIGNAL
-	[Signal] public delegate void GameStartedEventHandler();
 
 	//EXPORTS
 	[Export] private Marker2D leftBound;
@@ -56,6 +54,11 @@ public partial class EnemyPig : Node2D
     #endregion <--->
 
     #region GODOT FUNCTIONS
+    public override void _Ready()
+    {
+        GameManager.Instance.GameStart += OnGameStart;
+    }
+
     public override void _PhysicsProcess(double delta)
 	{
 		if(GameManager.Instance.started)

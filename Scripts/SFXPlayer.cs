@@ -7,6 +7,7 @@ public partial class SFXPlayer : AudioStreamPlayer
 	{
 		if(Stream == Global.sfx_fall)
 			GameManager.Instance.GameOver();
-		QueueFree();
+		if(Stream != Global.sfx_bossFall)
+			QueueFree();
 	}
 }

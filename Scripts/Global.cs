@@ -17,6 +17,7 @@ public partial class Global : Node
 
 	//OBJECT SFX
 	public static readonly AudioStream sfx_fruitGet = GD.Load<AudioStream>("res://Assets/Sound/SFX/General Sounds/Interactions/sfx_sounds_interaction1.wav");
+	public static readonly AudioStream sfx_switch = GD.Load<AudioStream>("res://Assets/Sound/SFX/Movement/Climbing Stairs/sfx_movement_stairs6loop.wav");
 
 	//PLAYER SFX
 	public static readonly AudioStream sfx_jump = GD.Load<AudioStream>("res://Assets/Sound/SFX/Movement/Jumping and Landing/sfx_movement_jump7.wav");
@@ -31,13 +32,29 @@ public partial class Global : Node
 	//ENEMY SFX
 	public static readonly AudioStream sfx_treeShoot = GD.Load<AudioStream>("res://Assets/Sound/SFX/Weapons/Single Shot Sounds/sfx_weapon_singleshot12.wav");
 	public static readonly AudioStream sfx_thud = GD.Load<AudioStream>("res://Assets/Sound/SFX/Weapons/Shotgun/sfx_weapon_shotgun3.wav");
-	
+	public static readonly AudioStream sfx_rhinoCharge = GD.Load<AudioStream>("res://Assets/Sound/SFX/Explosions/Shortest/sfx_exp_shortest_hard4.wav");
+	public static readonly AudioStream[] sfx_rhinoSteps =
+	{
+		GD.Load<AudioStream>("res://Assets/Sound/SFX/General Sounds/Impacts/sfx_sounds_impact3.wav"),
+		GD.Load<AudioStream>("res://Assets/Sound/SFX/General Sounds/Impacts/sfx_sounds_impact6.wav")
+	};
+	public static readonly AudioStream sfx_bossWingFlap = GD.Load<AudioStream>("res://Assets/Sound/SFX/Movement/Opening Doors/sfx_movement_dooropen1.wav");
+	public static readonly AudioStream sfx_bossFall = GD.Load<AudioStream>("res://Assets/Sound/SFX/Movement/Falling Sounds/sfx_sounds_falling7.wav");
+	public static readonly AudioStream sfx_bossBounce = GD.Load<AudioStream>("res://Assets/Sound/SFX/General Sounds/Impacts/sfx_sounds_impact15.wav");
+	public static readonly AudioStream sfx_bossThud = GD.Load<AudioStream>("res://Assets/Sound/SFX/Explosions/Shortest/sfx_exp_shortest_hard1.wav");
+	public static readonly AudioStream sfx_bossHit = GD.Load<AudioStream>("res://Assets/Sound/SFX/General Sounds/Neutral Sounds/sfx_sound_neutral11.wav");
+	public static readonly AudioStream[] sfx_bossDeaths = 
+	{
+		GD.Load<AudioStream>("res://Assets/Sound/SFX/Explosions/Short/sfx_exp_short_hard13.wav"),
+		GD.Load<AudioStream>("res://Assets/Sound/SFX/General Sounds/Negative Sounds/sfx_sounds_negative1.wav")
+	};
 	#endregion <--->
 
 	#region INSTANTIABLE OBJECTS
 	public static readonly PackedScene audioPlayerPrefab = GD.Load<PackedScene>("res://Prefabs/sfx_player.res");
 	public static readonly PackedScene positionalAudioPlayerPrefab = GD.Load<PackedScene>("res://Prefabs/sfx_positionalplayer.res");
 	public static readonly PackedScene enemyBullet = GD.Load<PackedScene>("res://Prefabs/enemy_bullet.res");
+	public static readonly PackedScene explosion = GD.Load<PackedScene>("res://Prefabs/small_explosion.res");
 	#endregion <--->
 
 	#region GROUP NAMES
@@ -93,7 +110,8 @@ public partial class Global : Node
 	}
 	#endregion <--->
 
-	#region SOUND FUNCTIONS
+	#region INSTANTIABLE FUNCTIONS
+	//SOUNDS
 	public void PlaySound(AudioStream audioStream, float volumePercentage = 100)
 	{
 		AudioStreamPlayer audioPlayer = audioPlayerPrefab.Instantiate<AudioStreamPlayer>();
@@ -111,6 +129,19 @@ public partial class Global : Node
 		audioPlayer.Stream = audioStream;
 		audioPlayer.VolumeDb = Mathf.LinearToDb(volumePercentage / 100);
 		audioPlayer.Play();
+	}
+
+	//EXPLOSIONS
+	public void InstantiateExplosion(Vector2 position, float sizeScale = 1)
+	{
+		AnimatedSprite2D e = explosion.Instantiate<AnimatedSprite2D>();
+		GetTree().CurrentScene.AddChild(e);
+		e.GlobalPosition = position;
+		e.Scale *= sizeScale;
+		if(sizeScale <= 1)
+			PlaySound(sfx_bossDeaths[0]);
+		else
+			PlaySound(sfx_bossDeaths[1]);
 	}
 	#endregion <--->
 

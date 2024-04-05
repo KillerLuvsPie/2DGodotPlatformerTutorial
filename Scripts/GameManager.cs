@@ -7,6 +7,10 @@ public partial class GameManager : Node
 	//SINGLETON
 	public static GameManager Instance;
 
+	//CUSTOM SIGNALS
+	[Signal] public delegate void GameStartEventHandler();
+	[Signal] public delegate void RespawnEventHandler();
+
 	//EXPORTS
 	//COUNTDOWN TEXT
 	[Export] private Texture2D[] countdownSprites = new Texture2D[4];
@@ -32,6 +36,9 @@ public partial class GameManager : Node
 	//AUDIO PLAYERS
 	[Export] private AudioStreamPlayer musicPlayer;
 	
+	//BOSS CHECK
+	[Export] private bool bossBattle = false;
+
 	//CONTROL
 	public bool pausable = false;
 	public bool playerControl = false;
@@ -59,8 +66,11 @@ public partial class GameManager : Node
 
 	private void SetFruitCounter()
 	{
-		fruitCounter = GetTree().GetNodesInGroup(Global.fruitGroup).Count;
-		fruitLabel.Text = "Fruit: " + fruitCounter;
+		if(!bossBattle)
+		{
+			fruitCounter = GetTree().GetNodesInGroup(Global.fruitGroup).Count;
+			fruitLabel.Text = "Fruit: " + fruitCounter;
+		}
 	}
 
 	public void SetCurrentCheckpoint(Vector2 pos)
@@ -80,17 +90,16 @@ public partial class GameManager : Node
 		CheckForWin();
 	}
 
-	private void MoveEnemies()
+	public void UpdateBossHPCounter(int hp)
 	{
-		for(int i = 0; i < GetTree().GetNodesInGroup(Global.enemyGroup).Count; i++)
-		{
-			if(GetTree().GetNodesInGroup(Global.enemyGroup)[i].GetType() == typeof(EnemyPig))
-			{
-				EnemyPig enemyPig = GetTree().GetNodesInGroup(Global.enemyGroup)[i].GetNode<EnemyPig>(".");
-				enemyPig.EmitSignal(EnemyPig.SignalName.GameStarted);
-			}
-		}
+		fruitLabel.Text = "Boss HP: " + hp;
 	}
+
+	private void GameStartSignalEmission()
+	{
+		EmitSignal(SignalName.GameStart);
+	}
+
 	public void TogglePause()
 	{
 		GetTree().Paused = !GetTree().Paused;
@@ -115,7 +124,7 @@ public partial class GameManager : Node
 		timeLabel.Text = minutes.ToString("00") + ":" + seconds.ToString("00");
 	}
 
-	private void CheckForWin()
+	public void CheckForWin()
 	{
 		if(fruitCounter == 0)
 		{
@@ -164,7 +173,7 @@ public partial class GameManager : Node
 		pausable = true;
 		countdownAnimation.Play();
 		countdownDisplay.Texture = countdownSprites[timer];
-		MoveEnemies();
+		GameStartSignalEmission();
 		await ToSignal(GetTree().CreateTimer(1f, false), Timer.SignalName.Timeout);
 		countdownDisplay.Hide();
 	}
@@ -192,10 +201,11 @@ public partial class GameManager : Node
 	//BUTTONS
 	public void OnRetryButtonPressed()
 	{
+		EmitSignal(SignalName.Respawn);
 		loseScreen.Visible = false;
 		SetMusicVolume(100);
 		GetTree().Paused = false;
-		Player.Instance.Respawn();	
+		Player.Instance.Respawn();
 	}
 
 	public void OnNextLevelButtonPressed()
