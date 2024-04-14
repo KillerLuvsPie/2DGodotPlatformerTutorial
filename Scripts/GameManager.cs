@@ -24,6 +24,7 @@ public partial class GameManager : Node
 	[Export] private Panel loseScreen;
 	[Export] private Label deathTotal;
 	[Export] private Label timeTotal;
+	[Export] private TextureRect highScoreNotifier;
 	[Export] private AnimationPlayer fadeAnimator;
 
 	//CAMERA
@@ -149,10 +150,22 @@ public partial class GameManager : Node
 
 	private void ResultsToGlobal()
 	{
-		Global.levelTimeRecords[Global.currentLevelIndex] = timeElapsed;
-		Global.levelDeathRecords[Global.currentLevelIndex] = deathCounter;
+		bool valuesChanged = false;
+		if(Global.levelTimeRecords[Global.currentLevelIndex] == -1 || Global.levelTimeRecords[Global.currentLevelIndex] > timeElapsed)
+		{
+			Global.levelTimeRecords[Global.currentLevelIndex] = timeElapsed;
+			Global.levelDeathRecords[Global.currentLevelIndex] = deathCounter;
+			valuesChanged = true;
+			highScoreNotifier.Visible = true;
+		}
 		if(Global.UnlockedLevelIndex <= Global.currentLevelIndex && Global.UnlockedLevelIndex < 5)
+		{
 			Global.UnlockedLevelIndex = Global.currentLevelIndex + 1;
+			valuesChanged = true;
+		}
+			
+		if(valuesChanged)
+			SaveLoadManager.Save();
 	}
 	#endregion <--->
 

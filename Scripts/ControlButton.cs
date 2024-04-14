@@ -13,7 +13,7 @@ public partial class ControlButton : Button
 	#region FUNCTIONS
 	private void SetControlButtonText()
     {
-        Text = InputMap.ActionGetEvents(action)[0].AsText().Replace(" (Physical)", "");
+        Text = InputMap.ActionGetEvents(action)[actionIndex].AsText().Replace(" (Physical)", "");
     }
 	#endregion <--->
 
@@ -30,8 +30,14 @@ public partial class ControlButton : Button
         {
             SetControlButtonText();
             GrabFocus();
+			Owner.EmitSignal(MainMenu.SignalName.OptionChanged);
         }
     }
+
+	public void OnClick()
+	{
+		Global.Instance.PlaySound(Global.sfx_button);
+	}
 	#endregion <--->
 
 	#region GODOT FUNCTIONS
@@ -39,7 +45,7 @@ public partial class ControlButton : Button
 	{
 		SetProcessUnhandledInput(false);
 		action = Text;
-		SetControlButtonText();
+		CallDeferred("SetControlButtonText");
 		Toggled += ToggleControlButton;
 	}
 

@@ -1,9 +1,12 @@
 using Godot;
 using System;
+using Godot.Collections;
 using System.Linq;
+using System.IO;
 
 public partial class MainMenu : CanvasLayer
 {
+    [Signal] public delegate void OptionChangedEventHandler();
     #region VARIABLES
     //SCREENS
     [Export] private Control mainMenuScreen;
@@ -28,28 +31,30 @@ public partial class MainMenu : CanvasLayer
 
     //MUSIC PLAYER
     [Export] private AudioStreamPlayer musicPlayer;
-
-    //CONTROLS REMAPPING
-    private string[] controlButtonActions;
+    
+    //CHECK FOR OPTIONS CHANGE
+    public static bool optionsChanged = false;
     #endregion <--->
 
     #region FUNCTIONS
     private void InitializeOptions()
     {
         //VIDEO
-        windowModeOptions.Select(1);
-        for(int i = 0; i < Global.Instance.Resolutions.Count; i++)
+        windowModeOptions.Select(Global.windowOptionIndex);
+        WindowModeSelected(Global.windowOptionIndex);
+        for(int i = 0; i < Global.Resolutions.Count; i++)
         {
-            resolutionOptions.AddItem(Global.Instance.Resolutions.ElementAt(i).Key);
-            if(DisplayServer.ScreenGetSize() == Global.Instance.Resolutions.ElementAt(i).Value)
+            resolutionOptions.AddItem(Global.Resolutions.ElementAt(i).Key);
+            if(Global.currentResolution == resolutionOptions.GetItemText(i))
+            {
                 resolutionOptions.Select(i);
+                ResolutionSelected(i);
+            }
         }
 
         //SOUND
-        musicSlider.Value = Global.musicVolumePercent / 100;
-        musicSliderLabel.Text = (musicSlider.Value * 100).ToString("0") + "%";
-        sfxSlider.Value = Global.sfxVolumePercent / 100;
-        sfxSliderLabel.Text = (sfxSlider.Value * 100).ToString("0") + "%";
+        MusicSliderValueChange(Global.musicVolumePercent / 100f);
+        SFXSliderValueChange(Global.sfxVolumePercent /100f);
     }
 
     private void InitializeButtonLevels()
@@ -78,6 +83,37 @@ public partial class MainMenu : CanvasLayer
         }
         else
             parent.Hide();
+    }
+
+    private void SaveControlsToResource()
+    {
+        Dictionary<string, Array<InputEvent>> newInputsToSave = new Dictionary<string, Array<InputEvent>>();
+        foreach(StringName str in InputMap.GetActions())
+        {
+            if(!str.ToString().Contains("ui_"))
+            {
+                newInputsToSave.Add(str, InputMap.ActionGetEvents(str)); 
+            }
+        }
+        Global.savedInputsInstance.inputList = newInputsToSave;
+        ResourceSaver.Save(Global.savedInputsInstance, Global.SavedInputPath);
+        GD.Print(Global.savedInputsInstance.PrintInputs());
+    }
+
+    private void LoadControlsFromResource()
+    {
+        GD.Print(Global.savedInputsInstance.PrintInputs());
+        for(int i = 0; i < InputMap.GetActions().Count; i++)
+        {
+            if(Global.savedInputsInstance.inputList.ContainsKey(InputMap.GetActions()[i]))
+            {
+                InputMap.ActionEraseEvents(InputMap.GetActions()[i]);
+                foreach(InputEvent input in Global.savedInputsInstance.inputList[InputMap.GetActions()[i]])
+                {
+                    InputMap.ActionAddEvent(InputMap.GetActions()[i], input);
+                }
+            }
+        }
     }
     #endregion <--->
 
@@ -132,6 +168,7 @@ public partial class MainMenu : CanvasLayer
         {
             ShowFadeEffect(false);
             musicPlayer.Play();
+            optionsChanged = false;
         }
     }
 
@@ -149,7 +186,7 @@ public partial class MainMenu : CanvasLayer
 
     public void OnHoverDisplayLevelStats(int i)
     {
-        if(Global.levelTimeRecords[i] == null)
+        if(Global.levelTimeRecords[i] == -1)
             timeLabel.Text = "Time: --:--";
         else
         {
@@ -157,7 +194,7 @@ public partial class MainMenu : CanvasLayer
             int seconds = Mathf.FloorToInt((float)Global.levelTimeRecords[i] % 60);
             timeLabel.Text = "Time: " + minutes.ToString("00") + ":" + seconds.ToString("00");
         }   
-        if(Global.levelDeathRecords[i] == null)
+        if(Global.levelDeathRecords[i] == -1)
             deathLabel.Text = "Deaths: ---";
         else
             deathLabel.Text = "Deaths: " + Global.levelDeathRecords[i].ToString();
@@ -169,8 +206,18 @@ public partial class MainMenu : CanvasLayer
         statsContainer.Hide();
     }
     //OPTIONS MENU
+    private void OnOptionChanged()
+    {
+        optionsChanged = true;
+    }
     public void OptionsBackButtonClick()
     {
+        if(optionsChanged)
+        {
+            optionsChanged = false;
+            SaveLoadManager.Save();
+            SaveControlsToResource();
+        }
         optionsScreen.Visible = false;
         mainMenuScreen.Visible = true;
     }
@@ -202,23 +249,33 @@ public partial class MainMenu : CanvasLayer
                 DisplayServer.WindowSetFlag(DisplayServer.WindowFlags.Borderless, true);
                 break;
         }
+        Global.windowOptionIndex = id;
+        EmitSignal(SignalName.OptionChanged);
     }
 
     public void ResolutionSelected(int id)
     {
-        DisplayServer.WindowSetSize(Global.Instance.Resolutions.ElementAt(id).Value);
+        DisplayServer.WindowSetSize(Global.Resolutions.ElementAt(id).Value);
+        Global.currentResolution = Global.Resolutions.ElementAt(id).Key;
+        EmitSignal(SignalName.OptionChanged);
     }
 
     public void MusicSliderValueChange(float value)
     {
         AudioServer.SetBusVolumeDb(AudioServer.GetBusIndex("Music"), Mathf.LinearToDb(value));
-        musicSliderLabel.Text = (musicSlider.Value * 100).ToString("0") + "%";
+        musicSlider.Value = value;
+        musicSliderLabel.Text = (value * 100).ToString("0") + "%";
+        Global.musicVolumePercent = value * 100;
+        EmitSignal(SignalName.OptionChanged);
     }
 
     public void SFXSliderValueChange(float value)
     {
         AudioServer.SetBusVolumeDb(AudioServer.GetBusIndex("SFX"), Mathf.LinearToDb(value));
-        sfxSliderLabel.Text = (sfxSlider.Value * 100).ToString("0") + "%";
+        sfxSlider.Value = value;
+        sfxSliderLabel.Text = (value * 100).ToString("0") + "%";
+        Global.sfxVolumePercent = value * 100;
+        EmitSignal(SignalName.OptionChanged);
     }
 
     //CONTROLS MENU
@@ -248,6 +305,9 @@ public partial class MainMenu : CanvasLayer
         InitializeOptions();
         InitializeButtonLevels();
         fadeAnimator.Play(Global.str_fadeIn);
+        if(Global.CheckIfSavedInputsFileExists())
+            LoadControlsFromResource();
+        OptionChanged += OnOptionChanged;
     }
     #endregion <--->
 }

@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 public partial class Global : Node
 {
@@ -8,6 +9,14 @@ public partial class Global : Node
 	public static Global Instance;
 
 	#region RESOURCES
+	//SAVED INPUT EVENTS
+	public static readonly string SavedInputPath = OS.GetUserDataDir() + "/saves/SavedInputs.res";
+	public static SavedInputMap savedInputsInstance;
+	public static bool CheckIfSavedInputsFileExists()
+	{
+		return File.Exists(SavedInputPath);
+	}
+
 	//SFX
 	//UI SFX
 	public static readonly AudioStream sfx_button = GD.Load<AudioStream>("res://Assets/Sound/SFX/General Sounds/Buttons/sfx_sounds_button11.wav");
@@ -74,22 +83,27 @@ public partial class Global : Node
 	#endregion <--->
 
 	#region OPTION VARIABLES
-	public readonly Dictionary<string, Vector2I> Resolutions = new Dictionary<string, Vector2I>()
+	public static readonly Dictionary<string, Vector2I> Resolutions = new Dictionary<string, Vector2I>()
 	{
 		{"800 x 600", new Vector2I(800, 600)},
 		{"1280 x 720", new Vector2I(1280, 720)},
 		{"1920 x 1080", new Vector2I(1920, 1080)} 
 	};
 
+	//SERIALIZABLE OPTIONS
+	public static int windowOptionIndex = 1;
+	public static string currentResolution = "1920 x 1080";
 	public static float musicVolumePercent = 80;
 	public static float sfxVolumePercent = 100;
+
 	#endregion <--->
 
 	#region LEVEL VARIABLES AND FUNCTIONS
+	public const int levelTotal = 5;
 	public static int currentLevelIndex = 0;
 	public static int UnlockedLevelIndex = 1;
-	public static Dictionary<int, double?> levelTimeRecords = new Dictionary<int, double?>();
-	public static Dictionary<int, int?> levelDeathRecords = new Dictionary<int, int?>();
+	public static Dictionary<int, double> levelTimeRecords = new Dictionary<int, double>();
+	public static Dictionary<int, int> levelDeathRecords = new Dictionary<int, int>();
 
 	public static string GetScenePath()
 	{
@@ -100,13 +114,17 @@ public partial class Global : Node
 
 	private static void InitializeLevelLists()
 	{
-		int levelTotal = 5;
-		for(int i = 1; i <= levelTotal; i++)
+		if(!SaveLoadManager.CheckIfSaveExists())
 		{
-			levelTimeRecords.Add(i, null);
-			levelDeathRecords.Add(i, null);
+			for(int i = 1; i <= levelTotal; i++)
+			{
+				levelTimeRecords.Add(i, -1);
+				levelDeathRecords.Add(i, -1);
+			}
+			GD.Print("Lists initialized successfully");
 		}
-		GD.Print("Lists initialized successfully");
+		else
+			SaveLoadManager.Load();
 	}
 	#endregion <--->
 
@@ -159,6 +177,10 @@ public partial class Global : Node
 			QueueFree();
 		else
 			Instance = this;
+		if(CheckIfSavedInputsFileExists())
+			savedInputsInstance = GD.Load<SavedInputMap>(SavedInputPath);
+		else
+			savedInputsInstance = GD.Load<SavedInputMap>("res://Resources/SavedInputs.res");
 		InitializeLevelLists();
 	}
 	#endregion <--->
