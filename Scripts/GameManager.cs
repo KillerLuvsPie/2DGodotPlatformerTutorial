@@ -220,7 +220,10 @@ public partial class GameManager : Node
 		GetTree().Paused = false;
 		Player.Instance.Respawn();
 	}
-
+	public void OnRetryLevelButtonPressed()
+	{
+		SceneTransition(Global.currentLevelIndex);
+	}
 	public void OnNextLevelButtonPressed()
 	{
 		SceneTransition(++Global.currentLevelIndex);
