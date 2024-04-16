@@ -212,7 +212,7 @@ public partial class GameManager : Node
 
 	#region SIGNALS
 	//BUTTONS
-	public void OnRetryButtonPressed()
+	public void OnRespawnButtonPressed()
 	{
 		EmitSignal(SignalName.Respawn);
 		loseScreen.Visible = false;
