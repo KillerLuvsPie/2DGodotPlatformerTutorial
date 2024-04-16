@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://b3kso0585krsr"
+path="res://.godot/imported/sfx_coin_single3.wav-7030f304b9bf16a1fe1b17dc94629891.sample"
+
+[deps]
+
+source_file="res://Assets/Sound/SFX/General Sounds/Coins/sfx_coin_single3.wav"
+dest_files=["res://.godot/imported/sfx_coin_single3.wav-7030f304b9bf16a1fe1b17dc94629891.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=0

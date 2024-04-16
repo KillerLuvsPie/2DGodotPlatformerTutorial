@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://dag1nw5t6h51g"
+path="res://.godot/imported/sfx_sounds_negative2.wav-3c4621a4e6ebf1495fb6886ec4f32f2c.sample"
+
+[deps]
+
+source_file="res://Assets/Sound/SFX/General Sounds/Negative Sounds/sfx_sounds_negative2.wav"
+dest_files=["res://.godot/imported/sfx_sounds_negative2.wav-3c4621a4e6ebf1495fb6886ec4f32f2c.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=0

@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://bi47w0yam0fjp"
+path="res://.godot/imported/sfx_sounds_interaction19.wav-41320970ed4426a4fc3fb711acf99fb1.sample"
+
+[deps]
+
+source_file="res://Assets/Sound/SFX/General Sounds/Interactions/sfx_sounds_interaction19.wav"
+dest_files=["res://.godot/imported/sfx_sounds_interaction19.wav-41320970ed4426a4fc3fb711acf99fb1.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=0

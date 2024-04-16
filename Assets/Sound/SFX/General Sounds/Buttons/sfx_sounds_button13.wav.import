@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://hrpafmfcyj4g"
+path="res://.godot/imported/sfx_sounds_button13.wav-330380e24736f75019f6ef973596aa11.sample"
+
+[deps]
+
+source_file="res://Assets/Sound/SFX/General Sounds/Buttons/sfx_sounds_button13.wav"
+dest_files=["res://.godot/imported/sfx_sounds_button13.wav-330380e24736f75019f6ef973596aa11.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=0

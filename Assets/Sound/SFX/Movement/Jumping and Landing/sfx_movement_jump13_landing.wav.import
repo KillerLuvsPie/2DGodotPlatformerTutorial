@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://bt072f8y1g86a"
+path="res://.godot/imported/sfx_movement_jump13_landing.wav-dcce5e5a96985b23b8677b29eb5453c3.sample"
+
+[deps]
+
+source_file="res://Assets/Sound/SFX/Movement/Jumping and Landing/sfx_movement_jump13_landing.wav"
+dest_files=["res://.godot/imported/sfx_movement_jump13_landing.wav-dcce5e5a96985b23b8677b29eb5453c3.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=0

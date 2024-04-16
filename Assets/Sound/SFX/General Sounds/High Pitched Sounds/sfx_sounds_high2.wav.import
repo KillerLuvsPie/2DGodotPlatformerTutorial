@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://dro8w0rlkr7ys"
+path="res://.godot/imported/sfx_sounds_high2.wav-143f26527d4a57ab43b6079518feb6af.sample"
+
+[deps]
+
+source_file="res://Assets/Sound/SFX/General Sounds/High Pitched Sounds/sfx_sounds_high2.wav"
+dest_files=["res://.godot/imported/sfx_sounds_high2.wav-143f26527d4a57ab43b6079518feb6af.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=0
